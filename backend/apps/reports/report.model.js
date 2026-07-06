@@ -8,7 +8,7 @@ const Report = sequelize.define('Report', {
   period_start: { type: DataTypes.DATEONLY, allowNull: false },
   period_end: { type: DataTypes.DATEONLY, allowNull: false },
   consumption: { type: DataTypes.FLOAT, allowNull: false },
-  amount_due: { type: DataTypes.FLOAT },
+  amount_due: { type: DataTypes.DECIMAL(10, 2) },
   paid: { type: DataTypes.BOOLEAN, defaultValue: false },
   paid_at: { type: DataTypes.DATE },
   generated_by: { type: DataTypes.INTEGER },
