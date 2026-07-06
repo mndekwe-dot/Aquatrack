@@ -8,7 +8,7 @@ const Staff = sequelize.define('Staff', {
   email: { type: DataTypes.STRING, allowNull: false, unique: true },
   password: { type: DataTypes.STRING, allowNull: false },
   role: { type: DataTypes.ENUM('admin', 'meter_reader', 'technician', 'billing'), defaultValue: 'meter_reader' },
-  phone: { type: DataTypes.STRING },
+  phone: { type: DataTypes.BIGINT },
   active: { type: DataTypes.BOOLEAN, defaultValue: true },
 });
 
