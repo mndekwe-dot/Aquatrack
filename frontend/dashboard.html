@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AquaTrack Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="dashboard.css">
+
+   <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <i class="fa-solid fa-droplet"></i>
+
+        <div>
+
+            <h2>AquaTrack</h2>
+
+            <span>Rwanda</span>
+
+        </div>
+
+    </div>
+
+    <ul class="menu">
+
+        <li class="active">
+
+            <a href="#">
+
+                <i class="fa-solid fa-house"></i>
+
+                Dashboard
+
+            </a>
+
+        </li>
+
+        <li>
+
+            <a href="#">
+
+                <i class="fa-solid fa-droplet"></i>
+
+                Leak Reports
+
+            </a>
+
+        </li>
+
+        <li>
+
+            <a href="#">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+                Analytics
+
+            </a>
+
+        </li>
+
+        <li>
+
+            <a href="#">
+
+                <i class="fa-solid fa-map-location-dot"></i>
+
+                Map View
+
+            </a>
+
+        </li>
+
+        <li>
+
+            <a href="#">
+
+                <i class="fa-solid fa-users"></i>
+
+                Citizens
+
+            </a>
+
+        </li>
+
+        <li>
+
+            <a href="#">
+
+                <i class="fa-solid fa-bell"></i>
+
+                Notifications
+
+            </a>
+
+        </li>
+
+        <li>
+
+            <a href="#">
+
+                <i class="fa-solid fa-gear"></i>
+
+                Settings
+
+            </a>
+
+        </li>
+
+    </ul>
+
+</aside>
+
+<!-- ================= MAIN ================= -->
+
+<main class="content">
+
+<header class="topbar">
+
+<div>
+
+<h1>
+
+Dashboard
+
+</h1>
+
+<p>
+
+Welcome back, Joseph
+
+</p>
+
+</div>
+
+<div class="top-icons">
+
+<i class="fa-regular fa-bell"></i>
+
+<i class="fa-regular fa-envelope"></i>
+
+<img src="https://i.pravatar.cc/100" alt="Profile">
+
+</div>
+
+</header>
+
+<!-- ================= HERO CARD ================= -->
+
+<section class="hero-card">
+
+<div>
+
+<span>
+
+Today's Overview
+
+</span>
+
+<h2>
+
+Water Infrastructure Monitoring
+
+</h2>
+
+<p>
+
+Monitor water leaks, faulty meters,
+illegal connections and citizen reports
+from one centralized dashboard.
+
+</p>
+
+<button>
+
+Generate Report
+
+</button>
+
+</div>
+
+<div class="hero-image">
+
+<i class="fa-solid fa-chart-line"></i>
+
+</div>
+
+</section>
+
+<!-- ================= STATS ================= -->
+
+<section class="stats">
+
+<div class="card">
+
+<i class="fa-solid fa-droplet"></i>
+
+<div>
+
+<h2>128</h2>
+
+<p>Active Leaks</p>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-users"></i>
+
+<div>
+
+<h2>624</h2>
+
+<p>Citizen Reports</p>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-wrench"></i>
+
+<div>
+
+<h2>96</h2>
+
+<p>Resolved</p>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-chart-column"></i>
+
+<div>
+
+<h2>38%</h2>
+
+<p>NRW Rate</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= QUICK ACTIONS ================= -->
+
+<section class="quick-actions">
+
+<div class="action-card">
+
+<i class="fa-solid fa-circle-plus"></i>
+
+<h3>
+
+New Report
+
+</h3>
+
+<p>
+
+Submit a new water issue.
+
+</p>
+
+</div>
+
+<div class="action-card">
+
+<i class="fa-solid fa-location-dot"></i>
+
+<h3>
+
+View Map
+
+</h3>
+
+<p>
+
+Open live infrastructure map.
+
+</p>
+
+</div>
+
+<div class="action-card">
+
+<i class="fa-solid fa-file-lines"></i>
+
+<h3>
+
+Reports
+
+</h3>
+
+<p>
+
+View all submitted reports.
+
+</p>
+
+</div>
+
+</section>
+
+<!-- ================= CHARTS ================= -->
+
+<section class="dashboard-grid">
+
+<div class="chart-card">
+
+<div class="card-header">
+
+<h3>
+
+Weekly Water Usage
+
+</h3>
+
+<button>
+
+This Week
+
+</button>
+
+</div>
+
+<div class="chart">
+
+<div class="bars">
+
+<div class="bar" style="height:70%;"><span>Mon</span></div>
+
+<div class="bar" style="height:45%;"><span>Tue</span></div>
+
+<div class="bar" style="height:82%;"><span>Wed</span></div>
+
+<div class="bar" style="height:60%;"><span>Thu</span></div>
+
+<div class="bar" style="height:95%;"><span>Fri</span></div>
+
+<div class="bar" style="height:55%;"><span>Sat</span></div>
+
+<div class="bar" style="height:75%;"><span>Sun</span></div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="profile-card">
+
+<img src="https://i.pravatar.cc/150?img=12" alt="Profile">
+
+<h3>
+
+Joseph Oke
+
+</h3>
+
+<p>
+
+Citizen User
+
+</p>
+
+<div class="profile-stats">
+
+<div>
+
+<h4>24</h4>
+
+<span>Reports</span>
+
+</div>
+
+<div>
+
+<h4>18</h4>
+
+<span>Resolved</span>
+
+</div>
+
+<div>
+
+<h4>6</h4>
+
+<span>Pending</span>
+
+</div>
+
+</div>
+
+<button>
+
+View Profile
+
+</button>
+
+</div>
+
+</section>
+
+<!-- ================= RECENT REPORTS ================= -->
+
+<section class="reports-section">
+
+<div class="section-header">
+
+<h2>
+
+Recent Reports
+
+</h2>
+
+<a href="#">
+
+View All
+
+</a>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+
+<th>Issue</th>
+
+<th>District</th>
+
+<th>Status</th>
+
+<th>Date</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>#1001</td>
+
+<td>Water Leak</td>
+
+<td>Gasabo</td>
+
+<td>
+
+<span class="status active">
+
+Active
+
+</span>
+
+</td>
+
+<td>Today</td>
+
+</tr>
+
+<tr>
+
+<td>#1002</td>
+
+<td>Faulty Meter</td>
+
+<td>Kicukiro</td>
+
+<td>
+
+<span class="status progress">
+
+In Progress
+
+</span>
+
+</td>
+
+<td>Yesterday</td>
+
+</tr>
+
+<tr>
+
+<td>#1003</td>
+
+<td>Illegal Connection</td>
+
+<td>Nyarugenge</td>
+
+<td>
+
+<span class="status resolved">
+
+Resolved
+
+</span>
+
+</td>
+
+<td>2 Days Ago</td>
+
+</tr>
+
+<tr>
+
+<td>#1004</td>
+
+<td>Low Pressure</td>
+
+<td>Musanze</td>
+
+<td>
+
+<span class="status progress">
+
+In Progress
+
+</span>
+
+</td>
+
+<td>3 Days Ago</td>
+
+</tr>
+
+<tr>
+
+<td>#1005</td>
+
+<td>Pipe Burst</td>
+
+<td>Huye</td>
+
+<td>
+
+<span class="status active">
+
+Active
+
+</span>
+
+</td>
+
+<td>5 Days Ago</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</section>
+
+<!-- ================= NOTIFICATIONS & ACTIVITY ================= -->
+
+<section class="bottom-grid">
+
+    <div class="notifications-card">
+
+        <div class="section-header">
+
+            <h2>Notifications</h2>
+
+            <a href="#">View All</a>
+
+        </div>
+
+        <div class="notification">
+
+            <div class="icon blue">
+
+                <i class="fa-solid fa-droplet"></i>
+
+            </div>
+
+            <div>
+
+                <h4>Leak Detected</h4>
+
+                <p>Gasabo District • 15 minutes ago</p>
+
+            </div>
+
+        </div>
+
+        <div class="notification">
+
+            <div class="icon green">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+            </div>
+
+            <div>
+
+                <h4>Report Resolved</h4>
+
+                <p>Faulty meter successfully repaired.</p>
+
+            </div>
+
+        </div>
+
+        <div class="notification">
+
+            <div class="icon orange">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+            </div>
+
+            <div>
+
+                <h4>Pressure Warning</h4>
+
+                <p>Low pressure detected in Kicukiro.</p>
+
+            </div>
+
+        </div>
+
+        <div class="notification">
+
+            <div class="icon red">
+
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+
+            </div>
+
+            <div>
+
+                <h4>Maintenance Scheduled</h4>
+
+                <p>Pipeline maintenance starts tomorrow.</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="activity-card">
+
+        <div class="section-header">
+
+            <h2>Recent Activity</h2>
+
+        </div>
+
+        <ul class="timeline">
+
+            <li>
+
+                <span class="dot"></span>
+
+                Citizen submitted a leak report in Gasabo.
+
+            </li>
+
+            <li>
+
+                <span class="dot"></span>
+
+                WASAC technician assigned to Report #1002.
+
+            </li>
+
+            <li>
+
+                <span class="dot"></span>
+
+                Faulty meter replaced successfully.
+
+            </li>
+
+            <li>
+
+                <span class="dot"></span>
+
+                Weekly analytics report generated.
+
+            </li>
+
+            <li>
+
+                <span class="dot"></span>
+
+                New SMS report received from Huye.
+
+            </li>
+
+        </ul>
+
+    </div>
+
+</section>
+
+</main>
+
+</div>
+
+<script src="dashboard.js"></script>
+
+</body>
+
+</html>
