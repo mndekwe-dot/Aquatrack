@@ -3,7 +3,7 @@ import random,datetime
 
 app = FastAPI()
 
-METER_SEIALS=["KAM-001","KAM-002","KAM-003"]
+METER_SERIALS=["KAM-001","KAM-002","KAM-003"]
 TAP_IDS=["TAP-001","TAP-002","TAP-003"]
 EOI_IDS=["EOI-001","EOI-002","EOI-003"]
 
@@ -15,7 +15,7 @@ def now_iso():
 @app.get("/kamstrup/api/readings")
 def kamstrup_readings():
     readings=[]
-    for serial in METER_SEIALS:
+    for serial in METER_SERIALS:
         alarms=[]
         if random.randint(1,5) == 1:
             alarms.append("high_usage")
@@ -31,14 +31,14 @@ def kamstrup_readings():
     return readings
 
 #susteq endpoint
-@app.get("/susteo/api/events")
-def sustep_events():
+@app.get("/susteq/api/events")
+def susteq_events():
     events=[]
     for tap in TAP_IDS:
         events.append({
             "tap_id":tap,
             "token_id":f"TOKEN-{random.randint(1000,9999)}",
-            "volume_litre":round(random.uniform(5.0,50.0),2),
+            "volume_litres":round(random.uniform(5.0,50.0),2),
             "timestamp":now_iso(),
             "credit_remaining":round(random.uniform(0.0,500.0),2)
         })
