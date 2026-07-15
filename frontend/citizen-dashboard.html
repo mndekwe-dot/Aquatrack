@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Citizen Dashboard | AquaTrack Rwanda</title>
+
+    <link rel="stylesheet" href="citizen.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <i class="fa-solid fa-droplet"></i>
+
+            <div>
+
+                <h2>AquaTrack</h2>
+
+                <span>Citizen Portal</span>
+
+            </div>
+
+        </div>
+
+        <ul>
+
+            <li class="active">
+                <a href="citizen-dashboard.html">
+                    <i class="fa-solid fa-house"></i>
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="citizen-history.html">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    History
+                </a>
+            </li>
+
+            <li>
+                <a href="citizen-report.html">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                    Report Issue
+                </a>
+            </li>
+
+            <li>
+                <a href="citizen-profile.html">
+                    <i class="fa-solid fa-user"></i>
+                    Profile
+                </a>
+            </li>
+
+            <li>
+                <a href="index.html">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <!-- Main Content -->
+
+    <main class="content">
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>Welcome Back 👋</h1>
+
+                <p>Your household water usage overview.</p>
+
+            </div>
+
+            <div class="profile">
+
+                <img src="images/profile.png" alt="Profile">
+
+            </div>
+
+        </header>
+
+        <!-- Summary Cards -->
+
+        <section class="cards">
+
+            <div class="card">
+
+                <i class="fa-solid fa-droplet"></i>
+
+                <h3>Today's Usage</h3>
+
+                <h2>180 L</h2>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fa-solid fa-gauge-high"></i>
+
+                <h3>This Month</h3>
+
+                <h2>5,420 L</h2>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                <h3>Open Reports</h3>
+
+                <h2>2</h2>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                <h3>Resolved</h3>
+
+                <h2>8</h2>
+
+            </div>
+
+        </section>
+
+        <!-- Usage Chart -->
+
+        <section class="chart-section">
+
+            <div class="chart-card">
+
+                <div class="card-header">
+
+                    <h2>Weekly Water Usage</h2>
+
+                </div>
+
+                <canvas id="usageChart"></canvas>
+
+            </div>
+
+        </section>
+
+        <!-- Recent Reports -->
+
+        <section class="table-card">
+
+            <div class="card-header">
+
+                <h2>Recent Reports</h2>
+
+            </div>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Issue</th>
+
+                        <th>Date</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>#1024</td>
+
+                        <td>Water Leak</td>
+
+                        <td>12 Jul 2026</td>
+
+                        <td><span class="status active">Open</span></td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>#1018</td>
+
+                        <td>Faulty Meter</td>
+
+                        <td>08 Jul 2026</td>
+
+                        <td><span class="status resolved">Resolved</span></td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>#1009</td>
+
+                        <td>Illegal Connection</td>
+
+                        <td>03 Jul 2026</td>
+
+                        <td><span class="status progress">In Progress</span></td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="citizen.js"></script>
+
+</body>
+
+</html>
