@@ -5,31 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AquaTrack Rwanda</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="css/style.css">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css">
-
-    <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/YOUR_KIT_ID.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
 
 <!-- ================= NAVBAR ================= -->
 
-<header class="navbar">
+<header>
 
     <div class="container nav-container">
 
         <div class="logo">
 
-            <div class="logo-icon">
-                <i class="fa-solid fa-droplet"></i>
-            </div>
+            <i class="fa-solid fa-droplet"></i>
 
-            <div class="logo-text">
+            <div>
                 <h2>AquaTrack</h2>
                 <span>Rwanda</span>
             </div>
@@ -40,29 +37,14 @@
 
             <ul>
 
-                <li><a href="#">Home</a></li>
-
+                <li><a href="#home">Home</a></li>
                 <li><a href="#features">Features</a></li>
-
                 <li><a href="#about">About</a></li>
-
                 <li><a href="#contact">Contact</a></li>
 
             </ul>
 
         </nav>
-
-        <div class="nav-buttons">
-
-            <a href="login.html" class="login-btn">
-                Login
-            </a>
-
-            <a href="register.html" class="register-btn">
-                Get Started
-            </a>
-
-        </div>
 
     </div>
 
@@ -70,77 +52,64 @@
 
 <!-- ================= HERO ================= -->
 
-<section class="hero">
+<section class="hero" id="home">
 
-    <div class="container hero-container">
+    <div class="container hero-grid">
 
-        <div class="hero-left">
+        <div class="hero-text">
 
             <span class="tag">
-
-                <i class="fa-solid fa-circle-check"></i>
-
                 Smart Water Management
-
             </span>
 
             <h1>
-
-                Reduce Water Loss.
-                <br>
-
-                Empower Citizens.
-
+                Every Drop
+                <span>Counted.</span><br>
+                Every Leak
+                <span>Detected.</span>
             </h1>
 
             <p>
-
-                AquaTrack Rwanda is a smart platform that helps
-                WASAC monitor leaks, faulty meters and illegal
-                connections while allowing citizens to report
-                water issues in real time.
-
+                AquaTrack Rwanda helps WASAC monitor water distribution while
+                allowing citizens to report leaks, faulty meters and illegal
+                connections in one intelligent platform.
             </p>
 
             <div class="hero-buttons">
 
-                <a href="register.html" class="primary-btn">
-
-                    Get Started
-
+                <a href="citizen-login.html" class="primary-btn">
+                    Citizen Login
                 </a>
 
-                <a href="#features" class="secondary-btn">
-
-                    Learn More
-
+                <a href="wasac-login.html" class="secondary-btn">
+                    WASAC Login
                 </a>
 
             </div>
 
             <div class="hero-stats">
 
-                <div class="stat">
+                <div>
 
-                    <h3>85%</h3>
+                    <h3>40%</h3>
 
-                    <span>Leak Detection Accuracy</span>
-
-                </div>
-
-                <div class="stat">
-
-                    <h3>24 hrs</h3>
-
-                    <span>Response Time</span>
+                    <p>NRW Today</p>
 
                 </div>
 
-                <div class="stat">
+                <div>
+
+                    <h3>24/7</h3>
+
+                    <p>Monitoring</p>
+
+                </div>
+
+                <div>
 
                     <h3>SMS</h3>
 
-                    <span>Citizen Reporting</span>
+                    <p>Reporting</p>
 
                 </div>
 
@@ -148,67 +117,47 @@
 
         </div>
 
-        <div class="hero-right">
+        <div class="hero-card">
 
-            <div class="dashboard-preview">
+            <div class="grid-card">
 
-                <div class="preview-header">
+                <div class="mini-card">
 
-                    <h3>
+                    <i class="fa-solid fa-droplet"></i>
 
-                        Dashboard Overview
+                    <h2>1.9M+</h2>
 
-                    </h3>
-
-                    <span>
-
-                        Live
-
-                    </span>
+                    <span>Water Users</span>
 
                 </div>
 
-                <div class="preview-grid">
+                <div class="mini-card">
 
-                    <div class="preview-card">
+                    <i class="fa-solid fa-faucet-drip"></i>
 
-                        <i class="fa-solid fa-droplet"></i>
+                    <h2>2.1M</h2>
 
-                        <h2>128</h2>
+                    <span>m³ Water</span>
 
-                        <p>Leaks Detected</p>
+                </div>
 
-                    </div>
+                <div class="mini-card">
 
-                    <div class="preview-card">
+                    <i class="fa-solid fa-location-dot"></i>
 
-                        <i class="fa-solid fa-users"></i>
+                    <h2>42</h2>
 
-                        <h2>624</h2>
+                    <span>Districts</span>
 
-                        <p>Citizen Reports</p>
+                </div>
 
-                    </div>
+                <div class="mini-card">
 
-                    <div class="preview-card">
+                    <i class="fa-solid fa-chart-line"></i>
 
-                        <i class="fa-solid fa-wrench"></i>
+                    <h2>-10%</h2>
 
-                        <h2>94</h2>
-
-                        <p>Resolved</p>
-
-                    </div>
-
-                    <div class="preview-card">
-
-                        <i class="fa-solid fa-chart-line"></i>
-
-                        <h2>38%</h2>
-
-                        <p>NRW Rate</p>
-
-                    </div>
+                    <span>NRW Goal</span>
 
                 </div>
 
@@ -228,215 +177,61 @@
 
         <div class="section-title">
 
-            <span>
-
-                Platform Features
-
-            </span>
+            <span>Platform Features</span>
 
             <h2>
-
-                Everything Needed To Monitor Water Infrastructure
-
+                Built For A Smarter Water Network
             </h2>
-
-            <p>
-
-                AquaTrack combines citizen reporting,
-                analytics and real-time monitoring into
-                one centralized platform.
-
-            </p>
 
         </div>
 
         <div class="feature-grid">
 
-                        <div class="feature-card">
+            <div class="feature-card">
 
-                <div class="feature-icon">
-                    <i class="fa-solid fa-droplet"></i>
-                </div>
+                <i class="fa-solid fa-triangle-exclamation"></i>
 
                 <h3>Leak Detection</h3>
 
                 <p>
-                    Detect water leaks early using existing
-                    infrastructure data and intelligent analysis.
+                    Detect abnormal water usage and possible leaks in real time.
                 </p>
 
             </div>
 
             <div class="feature-card">
 
-                <div class="feature-icon">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
+                <i class="fa-solid fa-file-circle-plus"></i>
 
-                <h3>Real-Time Alerts</h3>
+                <h3>Issue Reporting</h3>
 
                 <p>
-                    Notify WASAC teams instantly whenever
-                    suspicious water loss patterns are detected.
+                    Citizens report leaks, illegal connections and faulty meters.
                 </p>
 
             </div>
 
             <div class="feature-card">
 
-                <div class="feature-icon">
-                    <i class="fa-solid fa-mobile-screen-button"></i>
-                </div>
+                <i class="fa-solid fa-chart-column"></i>
 
-                <h3>SMS Reporting</h3>
+                <h3>Analytics</h3>
 
                 <p>
-                    Citizens can report leaks and receive
-                    updates even without a smartphone.
+                    Interactive dashboards help WASAC make faster decisions.
                 </p>
 
             </div>
 
             <div class="feature-card">
 
-                <div class="feature-icon">
-                    <i class="fa-solid fa-chart-column"></i>
-                </div>
+                <i class="fa-solid fa-message"></i>
 
-                <h3>Analytics Dashboard</h3>
+                <h3>SMS Support</h3>
 
                 <p>
-                    Interactive dashboards provide insights
-                    into NRW trends and system performance.
+                    Citizens without smartphones can still report water issues.
                 </p>
-
-            </div>
-
-            <div class="feature-card">
-
-                <div class="feature-icon">
-                    <i class="fa-solid fa-map-location-dot"></i>
-                </div>
-
-                <h3>Interactive Maps</h3>
-
-                <p>
-                    View leak locations, faulty meters and
-                    reported incidents on a centralized map.
-                </p>
-
-            </div>
-
-            <div class="feature-card">
-
-                <div class="feature-icon">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-
-                <h3>Infrastructure Monitoring</h3>
-
-                <p>
-                    Track pipeline conditions, faulty meters
-                    and illegal connections across Rwanda.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-<!-- ================= WHY AQUATRACK ================= -->
-
-<section class="why-us">
-
-    <div class="container why-container">
-
-        <div class="why-left">
-
-            <span class="section-label">
-                Why AquaTrack?
-            </span>
-
-            <h2>
-                Making Existing Data More Valuable
-            </h2>
-
-            <p>
-
-                Rwanda already collects valuable water
-                infrastructure data. AquaTrack connects
-                that information into one platform,
-                helping WASAC make faster and better
-                decisions without requiring new hardware.
-
-            </p>
-
-            <ul>
-
-                <li>
-                    <i class="fa-solid fa-circle-check"></i>
-                    Centralized monitoring dashboard
-                </li>
-
-                <li>
-                    <i class="fa-solid fa-circle-check"></i>
-                    Faster issue detection
-                </li>
-
-                <li>
-                    <i class="fa-solid fa-circle-check"></i>
-                    Improved citizen engagement
-                </li>
-
-                <li>
-                    <i class="fa-solid fa-circle-check"></i>
-                    Lower non-revenue water losses
-                </li>
-
-            </ul>
-
-        </div>
-
-        <div class="why-right">
-
-            <div class="info-card">
-
-                <h3>Today's Activity</h3>
-
-                <div class="activity">
-
-                    <span>Leaks Reported</span>
-
-                    <strong>32</strong>
-
-                </div>
-
-                <div class="activity">
-
-                    <span>Faulty Meters</span>
-
-                    <strong>11</strong>
-
-                </div>
-
-                <div class="activity">
-
-                    <span>Illegal Connections</span>
-
-                    <strong>7</strong>
-
-                </div>
-
-                <div class="activity">
-
-                    <span>Resolved Today</span>
-
-                    <strong>24</strong>
-
-                </div>
 
             </div>
 
@@ -450,175 +245,67 @@
 
 <section class="about" id="about">
 
-    <div class="container">
+    <div class="container about-grid">
 
-        <div class="section-title">
+        <div class="about-text">
 
-            <span>
-                About
-            </span>
+            <span>About AquaTrack</span>
 
             <h2>
-                Built For WASAC And Every Citizen
+                Transparent. Actionable. Rwandan.
             </h2>
 
             <p>
 
-                AquaTrack Rwanda is a smart water management
-                system designed to reduce non-revenue water by
-                combining monitoring, analytics and citizen
-                reporting into one modern platform.
+                AquaTrack Rwanda provides one connected platform for WASAC and
+                citizens to monitor water usage, detect anomalies and improve
+                service delivery without requiring new infrastructure.
 
             </p>
 
-        </div>
+            <ul>
 
-                <div class="about-grid">
+                <li>
+                    <i class="fa-solid fa-check"></i>
+                    Citizen & WASAC dashboards
+                </li>
 
-            <div class="about-card">
+                <li>
+                    <i class="fa-solid fa-check"></i>
+                    Real-time alerts
+                </li>
 
-                <i class="fa-solid fa-building"></i>
+                <li>
+                    <i class="fa-solid fa-check"></i>
+                    Leak & meter reporting
+                </li>
 
-                <h3>For WASAC</h3>
+                <li>
+                    <i class="fa-solid fa-check"></i>
+                    Data-driven decisions
+                </li>
 
-                <p>
-                    Monitor water infrastructure, receive
-                    real-time alerts, analyze NRW trends,
-                    assign field teams and manage reports
-                    from a single dashboard.
-                </p>
-
-            </div>
-
-            <div class="about-card">
-
-                <i class="fa-solid fa-users"></i>
-
-                <h3>For Citizens</h3>
-
-                <p>
-                    Report leaks, faulty meters and illegal
-                    connections quickly while tracking report
-                    progress through an easy-to-use platform.
-                </p>
-
-            </div>
-
-            <div class="about-card">
-
-                <i class="fa-solid fa-earth-africa"></i>
-
-                <h3>For Rwanda</h3>
-
-                <p>
-                    Support Rwanda's Vision 2050 by improving
-                    water management, reducing losses and
-                    increasing service transparency.
-                </p>
-
-            </div>
+            </ul>
 
         </div>
 
-    </div>
+        <div class="about-box">
 
-</section>
-
-<!-- ================= CALL TO ACTION ================= -->
-
-<section class="cta">
-
-    <div class="container cta-container">
-
-        <div class="cta-content">
-
-            <span>
-
-                Ready to Make an Impact?
-
-            </span>
-
-            <h2>
-
-                Join AquaTrack Rwanda Today
-
-            </h2>
+            <h3>Ready to protect every drop?</h3>
 
             <p>
 
-                Help WASAC improve water services while giving
-                every citizen a simple way to report water
-                issues and receive updates.
+                Choose how you want to access AquaTrack.
 
             </p>
 
-            <div class="cta-buttons">
+            <a href="citizen-login.html" class="primary-btn">
+                Citizen Portal
+            </a>
 
-                <a href="register.html" class="primary-btn">
-
-                    Create Account
-
-                </a>
-
-                <a href="login.html" class="secondary-btn">
-
-                    Sign In
-
-                </a>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-<!-- ================= CONTACT ================= -->
-
-<section class="contact" id="contact">
-
-    <div class="container">
-
-        <div class="section-title">
-
-            <span>Contact</span>
-
-            <h2>Get In Touch</h2>
-
-        </div>
-
-        <div class="contact-grid">
-
-            <div class="contact-card">
-
-                <i class="fa-solid fa-envelope"></i>
-
-                <h3>Email</h3>
-
-                <p>support@aquatrack.rw</p>
-
-            </div>
-
-            <div class="contact-card">
-
-                <i class="fa-solid fa-phone"></i>
-
-                <h3>Phone</h3>
-
-                <p>+250 788 000 000</p>
-
-            </div>
-
-            <div class="contact-card">
-
-                <i class="fa-solid fa-location-dot"></i>
-
-                <h3>Location</h3>
-
-                <p>Kigali, Rwanda</p>
-
-            </div>
+            <a href="wasac-login.html" class="secondary-btn">
+                WASAC Portal
+            </a>
 
         </div>
 
@@ -628,67 +315,38 @@
 
 <!-- ================= FOOTER ================= -->
 
-<footer>
+<footer id="contact">
 
-    <div class="container footer-container">
+    <div class="container footer">
 
-        <div class="footer-left">
+        <div>
 
-            <div class="logo">
-
-                <div class="logo-icon">
-
-                    <i class="fa-solid fa-droplet"></i>
-
-                </div>
-
-                <div class="logo-text">
-
-                    <h2>AquaTrack</h2>
-
-                    <span>Rwanda</span>
-
-                </div>
-
-            </div>
+            <h2>AquaTrack Rwanda</h2>
 
             <p>
 
-                Smart water management powered by
-                data, designed for WASAC and citizens.
+                Smart water management platform built for WASAC and the citizens
+                of Rwanda.
 
             </p>
 
         </div>
 
-        <div class="footer-right">
+        <div class="footer-links">
 
-            <a href="#">Home</a>
+            <a href="#">Privacy</a>
 
-            <a href="#features">Features</a>
+            <a href="#">Support</a>
 
-            <a href="#about">About</a>
-
-            <a href="#contact">Contact</a>
+            <a href="#">Contact</a>
 
         </div>
 
     </div>
 
-    <div class="copyright">
-
-        <p>
-
-            © 2026 AquaTrack Rwanda. All Rights Reserved.
-
-        </p>
-
-    </div>
-
 </footer>
 
-<script src="auth.js"></script>
+<script src="js/script.js"></script>
 
 </body>
-
 </html>
