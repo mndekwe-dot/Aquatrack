@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | AquaTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="citizen.css">
+    <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="citizen-layout">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><i class="fa-solid fa-droplet"></i></div>
+            <div><h2>AquaTrack</h2><span>Citizen Portal</span></div>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="home.html"><i class="fa-solid fa-house"></i>Home</a></li>
+            <li><a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i>History</a></li>
+            <li><a href="report.html"><i class="fa-solid fa-triangle-exclamation"></i>Report Issue</a></li>
+            <li class="active"><a href="profile.html"><i class="fa-solid fa-user"></i>Profile</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <span class="user-name" id="sidebarName">—</span>
+            <span class="user-label">Citizen Account</span>
+            <button class="logout-link" id="logoutBtn">Log out</button>
+        </div>
+    </aside>
+
+    <main class="page-content">
+
+        <div class="page-heading">
+            <h1>My Profile</h1>
+            <p>Your account details and preferences</p>
+        </div>
+
+        <div id="loadingState" class="loading-text">Loading profile...</div>
+        <div id="errorState" class="error-box"></div>
+
+        <div id="profileContent" style="display:none;">
+
+            <div class="profile-header">
+                <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+                <h2 id="profileName">—</h2>
+                <p id="profileLocation">—</p>
+            </div>
+
+            <div class="info-card">
+                <div class="info-row"><span>Phone Number</span><strong id="profilePhone">—</strong></div>
+                <div class="info-row"><span>Meter ID</span><strong id="profileMeter">—</strong></div>
+                <div class="info-row"><span>District</span><strong id="profileDistrict">—</strong></div>
+                <div class="info-row"><span>Sector</span><strong id="profileSector">—</strong></div>
+            </div>
+
+            <div class="info-card">
+                <h3 style="font-size:14px;margin-bottom:14px;color:#555;font-weight:600;">SMS Alert Preferences</h3>
+                <div class="toggle-row">
+                    <span>Low balance alerts</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggleLowBalance">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-row">
+                    <span>Leak detection alerts</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggleLeak">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-row">
+                    <span>Monthly bill preview</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggleBill">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Mobile-only logout (desktop uses sidebar) -->
+            <div class="profile-actions" id="mobileLogout" style="display:none;">
+                <button class="btn-danger" onclick="citizenLogout()">Log Out</button>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<nav class="bottom-nav">
+    <a href="home.html" class="nav-item"><i class="fa-solid fa-house"></i>Home</a>
+    <a href="history.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i>History</a>
+    <a href="report.html" class="nav-item"><i class="fa-solid fa-triangle-exclamation"></i>Report</a>
+    <a href="profile.html" class="nav-item active"><i class="fa-solid fa-user"></i>Profile</a>
+</nav>
+
+<script src="../../services/api.js"></script>
+<script src="citizen.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        if (!requireCitizen()) return;
+
+        // Show mobile logout button only on small screens
+        if (window.innerWidth <= 768) {
+            document.getElementById("mobileLogout").style.display = "flex";
+        }
+
+        try {
+            const household = await window.aquatrackApi.getMyHousehold();
+
+            document.getElementById("loadingState").style.display = "none";
+            document.getElementById("profileContent").style.display = "block";
+
+            document.getElementById("profileName").textContent = household.full_name;
+            document.getElementById("sidebarName").textContent = household.full_name;
+            document.getElementById("profileLocation").textContent = `${household.sector}, ${household.district}`;
+            document.getElementById("profilePhone").textContent = household.phone;
+            document.getElementById("profileMeter").textContent = household.meter_id;
+            document.getElementById("profileDistrict").textContent = household.district;
+            document.getElementById("profileSector").textContent = household.sector;
+
+            document.getElementById("toggleLowBalance").checked = household.sms_low_balance;
+            document.getElementById("toggleLeak").checked = household.sms_leak_detection;
+            document.getElementById("toggleBill").checked = household.sms_monthly_bill;
+
+            const savePrefs = async () => {
+                try {
+                    await window.aquatrackApi.updateMyHousehold({
+                        sms_low_balance: document.getElementById("toggleLowBalance").checked,
+                        sms_leak_detection: document.getElementById("toggleLeak").checked,
+                        sms_monthly_bill: document.getElementById("toggleBill").checked,
+                    });
+                } catch (err) {
+                    alert("Could not save preference: " + err.message);
+                }
+            };
+
+            document.getElementById("toggleLowBalance").addEventListener("change", savePrefs);
+            document.getElementById("toggleLeak").addEventListener("change", savePrefs);
+            document.getElementById("toggleBill").addEventListener("change", savePrefs);
+
+        } catch (err) {
+            document.getElementById("loadingState").style.display = "none";
+            const errBox = document.getElementById("errorState");
+            errBox.style.display = "block";
+            errBox.textContent = err.message || "Could not load your profile.";
+        }
+    });
+</script>
+
+</body>
+</html>

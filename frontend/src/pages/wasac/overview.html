@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overview | WASAC Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="wasac.css">
+    <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-droplet"></i>
+            <div><h2>AquaTrack</h2><span>WASAC Staff</span></div>
+        </div>
+        <ul class="menu">
+            <li class="active"><a href="overview.html"><i class="fa-solid fa-gauge"></i>Overview</a></li>
+            <li><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i>Alerts</a></li>
+            <li><a href="reports.html"><i class="fa-solid fa-file-lines"></i>Reports</a></li>
+            <li><a href="analytics.html"><i class="fa-solid fa-chart-column"></i>Analytics</a></li>
+            <li><a href="districts.html"><i class="fa-solid fa-map-location-dot"></i>Districts</a></li>
+            <li><a href="staff.html"><i class="fa-solid fa-users-gear"></i>Staff</a></li>
+        </ul>
+        <div class="staff-footer" id="staffFooter"></div>
+    </aside>
+
+    <main class="content">
+
+        <div class="topbar">
+            <div>
+                <h1>Overview</h1>
+                <p id="todayDate"></p>
+            </div>
+        </div>
+
+        <div id="errorBanner" class="error-banner"></div>
+        <div id="loadingState" class="loading-text">Loading dashboard...</div>
+
+        <div id="dashboardContent" style="display:none;">
+
+            <div class="stats">
+                <div class="stat-card"><span>Active Households</span><h2 id="statHouseholds">—</h2></div>
+                <div class="stat-card"><span>Open Alerts</span><h2 id="statAlerts">—</h2></div>
+                <div class="stat-card"><span>Citizen Reports Today</span><h2 id="statReports">—</h2></div>
+            </div>
+
+            <div class="table-card">
+                <div class="table-card-header">
+                    <h3>Recent Anomaly Alerts</h3>
+                    <a href="alerts.html" style="color:#2563eb;text-decoration:none;font-size:13px;">View all</a>
+                </div>
+                <table>
+                    <thead><tr><th>Meter</th><th>Type</th><th>Severity</th><th>Status</th><th>Flagged</th></tr></thead>
+                    <tbody id="alertsTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="table-card">
+                <div class="table-card-header">
+                    <h3>Recent Citizen Reports</h3>
+                    <a href="reports.html" style="color:#2563eb;text-decoration:none;font-size:13px;">View all</a>
+                </div>
+                <table>
+                    <thead><tr><th>District</th><th>Issue</th><th>Description</th><th>Received</th></tr></thead>
+                    <tbody id="reportsTableBody"></tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="../../services/api.js"></script>
+<script src="wasac.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    if (!requireStaff()) return;
+
+    document.getElementById("todayDate").textContent = new Date().toLocaleDateString("en-GB", {
+        weekday: "long", year: "numeric", month: "long", day: "numeric"
+    });
+
+    try {
+        const [households, alerts, issues] = await Promise.all([
+            window.aquatrackApi.getAllHouseholds(),
+            window.aquatrackApi.getAllAlerts(),
+            window.aquatrackApi.getAllIssues(),
+        ]);
+
+        document.getElementById("loadingState").style.display = "none";
+        document.getElementById("dashboardContent").style.display = "block";
+
+        const openAlerts = alerts.filter(a => !a.resolved);
+        document.getElementById("statHouseholds").textContent = households.length;
+        document.getElementById("statAlerts").textContent = openAlerts.length;
+
+        const todayStr = new Date().toDateString();
+        const reportsToday = issues.filter(i => new Date(i.createdAt).toDateString() === todayStr);
+        document.getElementById("statReports").textContent = reportsToday.length;
+
+        const alertsBody = document.getElementById("alertsTableBody");
+        const recentAlerts = openAlerts.slice(0, 5);
+        alertsBody.innerHTML = recentAlerts.length
+            ? recentAlerts.map(a => `
+                <tr>
+                    <td>MTR-${String(a.meter_id).padStart(4, "0")}</td>
+                    <td>${a.type.replace("_", " ")}</td>
+                    <td><span class="badge ${a.severity}">${a.severity}</span></td>
+                    <td><span class="badge ${a.resolved ? "resolved" : "open"}">${a.resolved ? "Resolved" : "Open"}</span></td>
+                    <td>${formatDate(a.createdAt)}</td>
+                </tr>`).join("")
+            : '<tr><td colspan="5" class="empty-state">No open alerts right now.</td></tr>';
+
+        const reportsBody = document.getElementById("reportsTableBody");
+        const recentIssues = issues.slice(0, 5);
+        reportsBody.innerHTML = recentIssues.length
+            ? recentIssues.map(i => `
+                <tr>
+                    <td>${i.district}, ${i.sector}</td>
+                    <td>${i.issue_type.replace("_", " ")}</td>
+                    <td>${i.description ? i.description.slice(0, 40) : "—"}</td>
+                    <td>${formatDate(i.createdAt)}</td>
+                </tr>`).join("")
+            : '<tr><td colspan="4" class="empty-state">No citizen reports yet.</td></tr>';
+
+    } catch (err) {
+        document.getElementById("loadingState").style.display = "none";
+        const banner = document.getElementById("errorBanner");
+        banner.style.display = "block";
+        banner.textContent = err.message || "Could not load dashboard data.";
+    }
+});
+</script>
+
+</body>
+</html>

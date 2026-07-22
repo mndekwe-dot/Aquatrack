@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | AquaTrack Rwanda</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+    <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="auth-container">
+
+    <div class="left-panel">
+        <div class="overlay">
+            <div class="logo">
+                <i class="fa-solid fa-droplet"></i>
+                <h2>AquaTrack Rwanda</h2>
+            </div>
+            <h1>Welcome Back!</h1>
+            <p>
+                Sign in to track your water usage, view your bill
+                forecast, and report issues directly to WASAC.
+            </p>
+            <div class="features">
+                <div><i class="fa-solid fa-circle-check"></i><span>Real-Time Usage Tracking</span></div>
+                <div><i class="fa-solid fa-circle-check"></i><span>Bill Forecast</span></div>
+                <div><i class="fa-solid fa-circle-check"></i><span>Report Issues Instantly</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <div class="form-box">
+            <h2>Sign In</h2>
+            <p>Login to your AquaTrack citizen account.</p>
+
+            <div id="errorBox" class="error-box" style="display:none;"></div>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="phone" placeholder="+250 7XX XXX XXX" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" id="submitBtn">Sign In</button>
+            </form>
+
+            <div class="bottom-text">
+                Don't have an account?
+                <a href="register.html">Create Account</a>
+            </div>
+
+            <div class="bottom-text" style="margin-top:10px;">
+                WASAC staff? <a href="src/pages/wasac/wasac-login.html">Staff Login</a>
+            </div>
+
+            <div class="back-home">
+                <a href="index.html">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="src/services/api.js"></script>
+<script src="auth.js"></script>
+</body>
+</html>

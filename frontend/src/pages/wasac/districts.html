@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Districts | WASAC Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="wasac.css">
+    <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-droplet"></i>
+            <div><h2>AquaTrack</h2><span>WASAC Staff</span></div>
+        </div>
+        <ul class="menu">
+            <li><a href="overview.html"><i class="fa-solid fa-gauge"></i>Overview</a></li>
+            <li><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i>Alerts</a></li>
+            <li><a href="reports.html"><i class="fa-solid fa-file-lines"></i>Reports</a></li>
+            <li><a href="analytics.html"><i class="fa-solid fa-chart-column"></i>Analytics</a></li>
+            <li class="active"><a href="districts.html"><i class="fa-solid fa-map-location-dot"></i>Districts</a></li>
+            <li><a href="staff.html"><i class="fa-solid fa-users-gear"></i>Staff</a></li>
+        </ul>
+        <div class="staff-footer" id="staffFooter"></div>
+    </aside>
+
+    <main class="content">
+
+        <div class="topbar">
+            <div>
+                <h1>Districts</h1>
+                <p>Household and report coverage by district</p>
+            </div>
+        </div>
+
+        <div id="errorBanner" class="error-banner"></div>
+        <div id="loadingState" class="loading-text">Loading districts...</div>
+
+        <div id="districtsContent" style="display:none;">
+            <div class="districts-grid" id="districtsGrid"></div>
+        </div>
+
+    </main>
+
+</div>
+
+<script src="../../services/api.js"></script>
+<script src="wasac.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    if (!requireStaff()) return;
+
+    try {
+        const [households, issues] = await Promise.all([
+            window.aquatrackApi.getAllHouseholds(),
+            window.aquatrackApi.getAllIssues(),
+        ]);
+
+        document.getElementById("loadingState").style.display = "none";
+        document.getElementById("districtsContent").style.display = "block";
+
+        const todayStr = new Date().toDateString();
+
+        const districtMap = {};
+        households.forEach(h => {
+            const key = h.district || "Unknown";
+            if (!districtMap[key]) districtMap[key] = { households: 0, reportsToday: 0, openIssues: 0 };
+            districtMap[key].households += 1;
+        });
+        issues.forEach(i => {
+            const key = i.district || "Unknown";
+            if (!districtMap[key]) districtMap[key] = { households: 0, reportsToday: 0, openIssues: 0 };
+            if (new Date(i.createdAt).toDateString() === todayStr) districtMap[key].reportsToday += 1;
+            if (i.status !== "resolved") districtMap[key].openIssues += 1;
+        });
+
+        const entries = Object.entries(districtMap);
+        const grid = document.getElementById("districtsGrid");
+        grid.innerHTML = entries.length ? entries.map(([district, data]) => `
+            <div class="district-card">
+                <h3>${district}</h3>
+                <div class="district-stat"><span>Households</span><strong>${data.households}</strong></div>
+                <div class="district-stat"><span>Open Issues</span><strong>${data.openIssues}</strong></div>
+                <div class="district-stat"><span>Reports Today</span><strong>${data.reportsToday}</strong></div>
+            </div>`).join("") : '<div class="empty-state">No household data yet.</div>';
+
+    } catch (err) {
+        document.getElementById("loadingState").style.display = "none";
+        const banner = document.getElementById("errorBanner");
+        banner.style.display = "block";
+        banner.textContent = err.message || "Could not load districts.";
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Management | WASAC Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="wasac.css">
+    <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+    <style>
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 36px;
+            width: 100%;
+            max-width: 460px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+        }
+        .modal-card h3 { font-size: 20px; margin-bottom: 6px; }
+        .modal-card p { color: #777; font-size: 13.5px; margin-bottom: 24px; }
+        .modal-buttons { display: flex; gap: 12px; margin-top: 20px; }
+        .btn-cancel {
+            flex: 1; background: #f1f5f9; color: #555; border: none;
+            padding: 13px; border-radius: 12px; font-weight: 600; cursor: pointer;
+        }
+        .credentials-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+        }
+        .credentials-box h4 { color: #166534; margin-bottom: 12px; font-size: 14px; }
+        .cred-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13.5px; border-bottom: 1px solid #dcfce7; }
+        .cred-row:last-child { border-bottom: none; }
+        .cred-row span { color: #555; }
+        .cred-row strong { color: #166534; font-family: monospace; }
+        .role-badge {
+            display: inline-block; padding: 4px 10px; border-radius: 20px;
+            font-size: 11.5px; font-weight: 600; background: #dbeafe; color: #1e40af;
+        }
+        .role-badge.admin { background: #fce7f3; color: #9d174d; }
+        .role-badge.meter_reader { background: #dbeafe; color: #1e40af; }
+        .role-badge.technician { background: #dcfce7; color: #166534; }
+        .role-badge.billing { background: #fef3c7; color: #92400e; }
+        .staff-table-card { background: #fff; border-radius: 18px; padding: 24px; box-shadow: 0 8px 20px rgba(0,0,0,.04); }
+        .staff-table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .staff-table-header h3 { font-size: 16px; }
+        .btn-add {
+            background: #2563eb; color: #fff; border: none; padding: 10px 20px;
+            border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 13.5px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .btn-add:hover { background: #1d4ed8; }
+        .status-dot {
+            width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px;
+        }
+        .status-dot.active { background: #22c55e; }
+        .status-dot.inactive { background: #ef4444; }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-droplet"></i>
+            <div><h2>AquaTrack</h2><span>WASAC Staff</span></div>
+        </div>
+        <ul class="menu">
+            <li><a href="overview.html"><i class="fa-solid fa-gauge"></i>Overview</a></li>
+            <li><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i>Alerts</a></li>
+            <li><a href="reports.html"><i class="fa-solid fa-file-lines"></i>Reports</a></li>
+            <li><a href="analytics.html"><i class="fa-solid fa-chart-column"></i>Analytics</a></li>
+            <li><a href="districts.html"><i class="fa-solid fa-map-location-dot"></i>Districts</a></li>
+            <li class="active"><a href="staff.html"><i class="fa-solid fa-users-gear"></i>Staff</a></li>
+        </ul>
+        <div class="staff-footer" id="staffFooter"></div>
+    </aside>
+
+    <main class="content">
+
+        <div class="topbar">
+            <div>
+                <h1>Staff Management</h1>
+                <p>Create and manage WASAC employee accounts</p>
+            </div>
+        </div>
+
+        <div id="errorBanner" class="error-banner"></div>
+        <div id="loadingState" class="loading-text">Loading staff...</div>
+
+        <div id="staffContent" style="display:none;">
+            <div class="staff-table-card">
+                <div class="staff-table-header">
+                    <h3>All Staff Accounts</h3>
+                    <button class="btn-add" id="openModalBtn">
+                        <i class="fa-solid fa-plus"></i> Add New Staff
+                    </button>
+                </div>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="staffTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
+<div class="modal-overlay" id="createModal">
+    <div class="modal-card">
+        <h3>Create Staff Account</h3>
+        <p>Fill in the details below. Share the email and temporary password with the new employee.</p>
+
+        <div id="modalError" class="error-box" style="display:none; margin-bottom:16px;"></div>
+
+        <!-- Step 1: Form -->
+        <div id="createForm">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="newName" placeholder="e.g. Jean Paul Habimana" required>
+            </div>
+            <div class="form-group">
+                <label>Work Email</label>
+                <input type="email" id="newEmail" placeholder="e.g. jeanpaul@wasac.rw" required>
+            </div>
+            <div class="form-group">
+                <label>Role</label>
+                <select id="newRole">
+                    <option value="meter_reader">Meter Reader</option>
+                    <option value="technician">Technician</option>
+                    <option value="billing">Billing Officer</option>
+                    <option value="admin">Admin (IT)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Temporary Password</label>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="newTempPassword" placeholder="Set a temporary password" required style="flex:1;">
+                    <button type="button" id="generateBtn" style="width:auto; padding:0 14px; border-radius:12px; background:#f1f5f9; color:#555; border:none; cursor:pointer; font-size:13px; font-weight:600; white-space:nowrap;">
+                        Generate
+                    </button>
+                </div>
+                <small style="color:#888; font-size:12px; margin-top:6px; display:block;">The employee will be required to change this on first login.</small>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn-cancel" id="cancelBtn">Cancel</button>
+                <button class="btn-primary" id="createBtn" style="flex:1;">Create Account</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Success — show credentials to copy -->
+        <div id="successView" style="display:none;">
+            <div class="credentials-box">
+                <h4><i class="fa-solid fa-circle-check"></i> Account Created Successfully!</h4>
+                <div class="cred-row"><span>Name</span><strong id="credName">—</strong></div>
+                <div class="cred-row"><span>Email</span><strong id="credEmail">—</strong></div>
+                <div class="cred-row"><span>Temp Password</span><strong id="credPassword">—</strong></div>
+                <div class="cred-row"><span>Role</span><strong id="credRole">—</strong></div>
+            </div>
+            <p style="color:#555; font-size:13px; margin-bottom:20px;">
+                📋 Copy and share these credentials with the employee. They will be asked to change their password on first login.
+            </p>
+            <button class="btn-primary" id="doneBtn" style="width:100%;">Done</button>
+        </div>
+    </div>
+</div>
+
+<script src="../../services/api.js"></script>
+<script src="wasac.js"></script>
+<script>
+    let allStaff = [];
+
+    function generateTempPassword() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#!';
+        let pass = '';
+        for (let i = 0; i < 10; i++) {
+            pass += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return pass;
+    }
+
+    function renderStaffTable() {
+        const body = document.getElementById('staffTableBody');
+        if (allStaff.length === 0) {
+            body.innerHTML = '<tr><td colspan="5" class="empty-state">No staff accounts yet.</td></tr>';
+            return;
+        }
+
+        body.innerHTML = allStaff.map(s => `
+        <tr>
+            <td><strong>${s.name}</strong></td>
+            <td>${s.email}</td>
+            <td><span class="role-badge ${s.role}">${s.role.replace('_', ' ')}</span></td>
+            <td>
+                <span class="status-dot ${s.active ? 'active' : 'inactive'}"></span>
+                ${s.active ? 'Active' : 'Deactivated'}
+            </td>
+            <td>
+                ${s.role !== 'admin' ? `
+                    <button class="btn-small" onclick="toggleStaff(${s.id}, ${s.active})">
+                        ${s.active ? 'Deactivate' : 'Reactivate'}
+                    </button>
+                ` : '<span style="color:#aaa; font-size:12px;">Protected</span>'}
+            </td>
+        </tr>
+    `).join('');
+    }
+
+    async function toggleStaff(id, currentlyActive) {
+        if (!confirm(`Are you sure you want to ${currentlyActive ? 'deactivate' : 'reactivate'} this account?`)) return;
+        try {
+            await window.aquatrackApi.updateStaff(id, { active: !currentlyActive });
+            const staff = allStaff.find(s => s.id === id);
+            if (staff) staff.active = !currentlyActive;
+            renderStaffTable();
+        } catch (err) {
+            alert('Could not update staff: ' + err.message);
+        }
+    }
+
+    // Modal logic
+    document.getElementById('openModalBtn').addEventListener('click', () => {
+        document.getElementById('createModal').classList.add('active');
+        document.getElementById('createForm').style.display = 'block';
+        document.getElementById('successView').style.display = 'none';
+        document.getElementById('modalError').style.display = 'none';
+        document.getElementById('newName').value = '';
+        document.getElementById('newEmail').value = '';
+        document.getElementById('newRole').value = 'meter_reader';
+        document.getElementById('newTempPassword').value = '';
+    });
+
+    document.getElementById('cancelBtn').addEventListener('click', () => {
+        document.getElementById('createModal').classList.remove('active');
+    });
+
+    document.getElementById('generateBtn').addEventListener('click', () => {
+        document.getElementById('newTempPassword').value = generateTempPassword();
+    });
+
+    document.getElementById('createBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('createBtn');
+        const errorBox = document.getElementById('modalError');
+        errorBox.style.display = 'none';
+
+        const name = document.getElementById('newName').value.trim();
+        const email = document.getElementById('newEmail').value.trim();
+        const role = document.getElementById('newRole').value;
+        const temp_password = document.getElementById('newTempPassword').value.trim();
+
+        if (!name || !email || !temp_password) {
+            errorBox.textContent = 'Please fill in all fields.';
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Creating...';
+
+        try {
+            const result = await window.aquatrackApi.createStaff({ name, email, role, temp_password });
+
+            // Show credentials screen
+            document.getElementById('createForm').style.display = 'none';
+            document.getElementById('successView').style.display = 'block';
+            document.getElementById('credName').textContent = name;
+            document.getElementById('credEmail').textContent = email;
+            document.getElementById('credPassword').textContent = temp_password;
+            document.getElementById('credRole').textContent = role.replace('_', ' ');
+
+            // Add to table immediately
+            allStaff.unshift(result.staff || { id: Date.now(), name, email, role, active: true });
+            renderStaffTable();
+
+        } catch (err) {
+            errorBox.textContent = err.message || 'Could not create account. Please try again.';
+            errorBox.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Create Account';
+        }
+    });
+
+    document.getElementById('doneBtn').addEventListener('click', () => {
+        document.getElementById('createModal').classList.remove('active');
+    });
+
+    // Load staff on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (!requireStaff()) return;
+
+        const user = window.aquatrackApi.getUser();
+        if (user?.role !== 'admin') {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorBanner').style.display = 'block';
+            document.getElementById('errorBanner').textContent = 'Access denied. This page is for admin accounts only.';
+            return;
+        }
+
+        try {
+            allStaff = await window.aquatrackApi.getAllStaff();
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('staffContent').style.display = 'block';
+            renderStaffTable();
+        } catch (err) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorBanner').style.display = 'block';
+            document.getElementById('errorBanner').textContent = err.message || 'Could not load staff list.';
+        }
+    });
+</script>
+
+</body>
+</html>

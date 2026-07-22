@@ -1,8 +1,10 @@
 const router = require('express').Router();
 const Alert = require('./alert.model');
-const { protect } = require('../../middleware/auth');
+const Meter = require('../meters/meter.model');
+const { protect, staffOnly, citizenOnly } = require('../../middleware/auth');
 
-router.get('/', protect, async (req, res) => {
+// WASAC staff
+router.get('/', protect, staffOnly, async (req, res) => {
   try {
     const alerts = await Alert.findAll({ order: [['createdAt', 'DESC']] });
     res.json(alerts);
@@ -11,7 +13,22 @@ router.get('/', protect, async (req, res) => {
   }
 });
 
-router.post('/', protect, async (req, res) => {
+// Citizen  only their own alert
+router.get('/mine', protect, citizenOnly, async (req, res) => {
+  try {
+    const meter = await Meter.findOne({ where: { household_id: req.user.id } });
+    if (!meter) return res.json([]);
+    const alerts = await Alert.findAll({
+      where: { meter_id: meter.id, resolved: false },
+      order: [['createdAt', 'DESC']],
+    });
+    res.json(alerts);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.post('/', protect, staffOnly, async (req, res) => {
   try {
     const alert = await Alert.create(req.body);
     res.status(201).json(alert);
@@ -20,7 +37,7 @@ router.post('/', protect, async (req, res) => {
   }
 });
 
-router.patch('/:id/resolve', protect, async (req, res) => {
+router.patch('/:id/resolve', protect, staffOnly, async (req, res) => {
   try {
     const alert = await Alert.findByPk(req.params.id);
     if (!alert) return res.status(404).json({ message: 'Alert not found' });
@@ -31,7 +48,7 @@ router.patch('/:id/resolve', protect, async (req, res) => {
   }
 });
 
-router.delete('/:id', protect, async (req, res) => {
+router.delete('/:id', protect, staffOnly, async (req, res) => {
   try {
     const alert = await Alert.findByPk(req.params.id);
     if (!alert) return res.status(404).json({ message: 'Alert not found' });

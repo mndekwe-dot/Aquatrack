@@ -1,11 +1,5 @@
-/*=========================================
-  GOOGLE FONT
-=========================================*/
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-/*=========================================
-  RESET
-=========================================*/
 *{
     margin:0;
     padding:0;
@@ -37,10 +31,6 @@ ul{
     margin:auto;
 }
 
-/*=========================================
-  BUTTONS
-=========================================*/
-
 .primary-btn,
 .secondary-btn{
     display:inline-flex;
@@ -71,10 +61,6 @@ ul{
     background:#2563EB;
     color:#fff;
 }
-
-/*=========================================
-  NAVBAR
-=========================================*/
 
 header{
     position:fixed;
@@ -134,10 +120,6 @@ nav a{
 nav a:hover{
     color:#2563EB;
 }
-
-/*=========================================
-  HERO
-=========================================*/
 
 .hero{
     padding:150px 0 90px;
@@ -199,10 +181,6 @@ nav a:hover{
     font-size:15px;
 }
 
-/*=========================================
-  HERO CARD
-=========================================*/
-
 .hero-card{
     background:#fff;
     border-radius:24px;
@@ -244,10 +222,6 @@ nav a:hover{
     color:#64748B;
     font-size:14px;
 }
-
-/*=========================================
-  FEATURES
-=========================================*/
 
 .features{
     padding:100px 0;
@@ -316,10 +290,6 @@ nav a:hover{
     line-height:1.7;
     font-size:15px;
 }
-
-/*=========================================
-  ABOUT
-=========================================*/
 
 .about{
     padding:110px 0;
@@ -401,10 +371,6 @@ nav a:hover{
     width:100%;
     margin-top:15px;
 }
-/*=========================================
-  FOOTER
-=========================================*/
-
 footer{
     background:#0F172A;
     color:#fff;
@@ -455,129 +421,125 @@ footer::after{
     font-size:14px;
 }
 
-/*=========================================
-  RESPONSIVE
-=========================================*/
-
 @media(max-width:1100px){
 
-.hero-grid{
-    grid-template-columns:1fr;
-    gap:50px;
-}
+    .hero-grid{
+        grid-template-columns:1fr;
+        gap:50px;
+    }
 
-.about-grid{
-    grid-template-columns:1fr;
-}
+    .about-grid{
+        grid-template-columns:1fr;
+    }
 
-.feature-grid{
-    grid-template-columns:repeat(2,1fr);
-}
+    .feature-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
 
-.hero-card{
-    max-width:700px;
-    margin:auto;
-}
+    .hero-card{
+        max-width:700px;
+        margin:auto;
+    }
 
 }
 
 @media(max-width:768px){
 
-.nav-container{
-    flex-direction:column;
-    justify-content:center;
-    height:auto;
-    padding:20px 0;
-}
+    .nav-container{
+        flex-direction:column;
+        justify-content:center;
+        height:auto;
+        padding:20px 0;
+    }
 
-nav ul{
-    margin-top:20px;
-    gap:20px;
-    flex-wrap:wrap;
-    justify-content:center;
-}
+    nav ul{
+        margin-top:20px;
+        gap:20px;
+        flex-wrap:wrap;
+        justify-content:center;
+    }
 
-.hero{
-    padding-top:180px;
-}
+    .hero{
+        padding-top:180px;
+    }
 
-.hero-text{
-    text-align:center;
-}
+    .hero-text{
+        text-align:center;
+    }
 
-.hero-buttons{
-    justify-content:center;
-    flex-wrap:wrap;
-}
+    .hero-buttons{
+        justify-content:center;
+        flex-wrap:wrap;
+    }
 
-.hero-stats{
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:35px;
-}
+    .hero-stats{
+        justify-content:center;
+        flex-wrap:wrap;
+        gap:35px;
+    }
 
-.hero-text h1{
-    font-size:42px;
-}
+    .hero-text h1{
+        font-size:42px;
+    }
 
-.section-title h2,
-.about-text h2{
-    font-size:34px;
-}
+    .section-title h2,
+    .about-text h2{
+        font-size:34px;
+    }
 
-.feature-grid{
-    grid-template-columns:1fr;
-}
+    .feature-grid{
+        grid-template-columns:1fr;
+    }
 
-.grid-card{
-    grid-template-columns:1fr;
-}
+    .grid-card{
+        grid-template-columns:1fr;
+    }
 
-.footer{
-    flex-direction:column;
-    text-align:center;
-    align-items:center;
-}
+    .footer{
+        flex-direction:column;
+        text-align:center;
+        align-items:center;
+    }
 
-.footer-links{
-    align-items:center;
-}
+    .footer-links{
+        align-items:center;
+    }
 
 }
 
 @media(max-width:500px){
 
-.container{
-    width:94%;
-}
+    .container{
+        width:94%;
+    }
 
-.primary-btn,
-.secondary-btn{
-    width:100%;
-}
+    .primary-btn,
+    .secondary-btn{
+        width:100%;
+    }
 
-.hero-text h1{
-    font-size:34px;
-}
+    .hero-text h1{
+        font-size:34px;
+    }
 
-.hero-buttons{
-    flex-direction:column;
-}
+    .hero-buttons{
+        flex-direction:column;
+    }
 
-.about-box{
-    padding:30px;
-}
+    .about-box{
+        padding:30px;
+    }
 
-.about-box h3{
-    font-size:24px;
-}
+    .about-box h3{
+        font-size:24px;
+    }
 
-.mini-card{
-    padding:22px;
-}
+    .mini-card{
+        padding:22px;
+    }
 
-.feature-card{
-    padding:28px 20px;
-}
+    .feature-card{
+        padding:28px 20px;
+    }
 
 }
