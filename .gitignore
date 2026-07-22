@@ -1,7 +1,8 @@
 # Environment files
 .env
 *.env
-
+package-lock.json
+package.json
 # Node
 node_modules/
 
