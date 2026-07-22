@@ -4,7 +4,7 @@ const sequelize = require('../../config/database');
 const Meter = sequelize.define('Meter', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   serial_number: { type: DataTypes.STRING, allowNull: false, unique: true },
-  household_id: { type: DataTypes.INTEGER, allowNull: false },
+  household_id: { type: DataTypes.INTEGER, allowNull: true }, // set once a household registers with this meter
   installation_date: { type: DataTypes.DATEONLY },
   last_reading: { type: DataTypes.FLOAT, defaultValue: 0 },
   last_reading_date: { type: DataTypes.DATEONLY },

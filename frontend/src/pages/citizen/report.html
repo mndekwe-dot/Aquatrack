@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Issue | AquaTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="citizen.css">
+    <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="citizen-layout">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><i class="fa-solid fa-droplet"></i></div>
+            <div><h2>AquaTrack</h2><span>Citizen Portal</span></div>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="home.html"><i class="fa-solid fa-house"></i>Home</a></li>
+            <li><a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i>History</a></li>
+            <li class="active"><a href="report.html"><i class="fa-solid fa-triangle-exclamation"></i>Report Issue</a></li>
+            <li><a href="profile.html"><i class="fa-solid fa-user"></i>Profile</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <span class="user-name" id="sidebarName">—</span>
+            <span class="user-label">Citizen Account</span>
+            <button class="logout-link" id="logoutBtn">Log out</button>
+        </div>
+    </aside>
+
+    <main class="page-content">
+
+        <div class="page-heading">
+            <h1>Report an Issue</h1>
+            <p>Let WASAC know what's happening in your area</p>
+        </div>
+
+        <div id="successBox" class="success-box">Your report was submitted successfully. WASAC has been notified.</div>
+        <div id="errorBox" class="error-box"></div>
+
+        <div class="form-card">
+            <form id="reportForm">
+                <div class="form-group">
+                    <label>Issue Type</label>
+                    <select id="issue_type" required>
+                        <option value="">Select an issue</option>
+                        <option value="leak">Water Leak</option>
+                        <option value="no_water">No Water</option>
+                        <option value="low_pressure">Low Pressure</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>How long has this been happening?</label>
+                    <select id="duration" required>
+                        <option value="">Select duration</option>
+                        <option value="Today">Today</option>
+                        <option value="2-3 days">2–3 days</option>
+                        <option value="Over a week">Over a week</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Select District</label>
+                    <select id="district" required>
+                        <option value="">Select district</option>
+                        <option value="Gasabo">Gasabo</option>
+                        <option value="Kicukiro">Kicukiro</option>
+                        <option value="Nyarugenge">Nyarugenge</option>
+                        <option value="Musanze">Musanze</option>
+                        <option value="Huye">Huye</option>
+                        <option value="Rubavu">Rubavu</option>
+                        <option value="Rusizi">Rusizi</option>
+                        <option value="Muhanga">Muhanga</option>
+                        <option value="Nyagatare">Nyagatare</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="otherDistrictDiv" style="display:none;">
+                    <label>Enter District</label>
+                    <input
+                            type="text"
+                            id="otherDistrict"
+                            placeholder="Enter your district">
+                </div>
+                <div class="form-group">
+                    <label>Select Sector</label>
+                    <input
+                            type="text"
+                            id="sector"
+                            placeholder="Enter your sector"
+                            required>
+                </div>
+                <div class="form-group">
+                    <label>Describe the issue (optional)</label>
+                    <textarea id="description" placeholder="Add any extra details that will help WASAC respond faster..."></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" class="btn-secondary" onclick="window.location.href='home.html'">Cancel</button>
+                    <button type="submit" class="btn-primary" id="submitBtn">Submit Report</button>
+                </div>
+            </form>
+        </div>
+
+    </main>
+
+</div>
+
+<nav class="bottom-nav">
+    <a href="home.html" class="nav-item"><i class="fa-solid fa-house"></i>Home</a>
+    <a href="history.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i>History</a>
+    <a href="report.html" class="nav-item active"><i class="fa-solid fa-triangle-exclamation"></i>Report</a>
+    <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i>Profile</a>
+</nav>
+
+<script src="../../services/api.js"></script>
+<script src="citizen.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        if (!requireCitizen()) return;
+
+        const user = window.aquatrackApi.getUser();
+        if (document.getElementById("sidebarName")) {
+            document.getElementById("sidebarName").textContent = user?.full_name || "Citizen";
+        }
+
+        const districtSelect = document.getElementById("district");
+        const otherDistrictDiv = document.getElementById("otherDistrictDiv");
+
+        districtSelect.addEventListener("change", () => {
+
+            if (districtSelect.value === "Other") {
+                otherDistrictDiv.style.display = "block";
+            } else {
+                otherDistrictDiv.style.display = "none";
+                document.getElementById("otherDistrict").value = "";
+            }
+
+        });
+
+        document.getElementById("reportForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById("submitBtn");
+            const errorBox = document.getElementById("errorBox");
+            const successBox = document.getElementById("successBox");
+            errorBox.style.display = "none";
+            successBox.style.display = "none";
+
+            let district = document.getElementById("district").value;
+
+            if (district === "Other") {
+                district = document.getElementById("otherDistrict").value.trim();
+            }
+
+            const payload = {
+                issue_type: document.getElementById("issue_type").value,
+                duration: document.getElementById("duration").value,
+                district: district,
+                sector: document.getElementById("sector").value.trim(),
+                description: document.getElementById("description").value.trim(),
+            };
+
+            btn.disabled = true;
+            btn.textContent = "Submitting...";
+
+            try {
+                await window.aquatrackApi.submitIssue(payload);
+                successBox.style.display = "block";
+                document.getElementById("reportForm").reset();
+            } catch (err) {
+                errorBox.textContent = err.message || "Could not submit your report. Please try again.";
+                errorBox.style.display = "block";
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Submit Report";
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

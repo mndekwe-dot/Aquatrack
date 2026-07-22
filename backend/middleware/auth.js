@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-
 const protect = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -14,6 +13,15 @@ const protect = (req, res, next) => {
   }
 };
 
+// Any WASAC staff member but not a citizen account
+const staffOnly = (req, res, next) => {
+  if (req.user?.role === 'citizen' || !req.user?.role) {
+    return res.status(403).json({ message: 'WASAC staff access required' });
+  }
+  next();
+};
+
+// Admin staff only
 const adminOnly = (req, res, next) => {
   if (req.user?.role !== 'admin') {
     return res.status(403).json({ message: 'Admin access required' });
@@ -21,4 +29,12 @@ const adminOnly = (req, res, next) => {
   next();
 };
 
-module.exports = { protect, adminOnly };
+// The logged-in citizen only
+const citizenOnly = (req, res, next) => {
+  if (req.user?.role !== 'citizen') {
+    return res.status(403).json({ message: 'Citizen access required' });
+  }
+  next();
+};
+
+module.exports = { protect, staffOnly, adminOnly, citizenOnly };

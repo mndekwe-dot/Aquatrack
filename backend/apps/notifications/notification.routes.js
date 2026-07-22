@@ -2,10 +2,12 @@ const router = require('express').Router();
 const Notification = require('./notification.model');
 const { protect } = require('../../middleware/auth');
 
+// Works for both staff and citizens
 router.get('/', protect, async (req, res) => {
   try {
+    const recipient_type = req.user.role === 'citizen' ? 'household' : 'staff';
     const notifications = await Notification.findAll({
-      where: { recipient_type: 'staff', recipient_id: req.user.id },
+      where: { recipient_type, recipient_id: req.user.id },
       order: [['createdAt', 'DESC']],
     });
     res.json(notifications);

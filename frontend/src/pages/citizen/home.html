@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | AquaTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="citizen.css">
+    <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="citizen-layout">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><i class="fa-solid fa-droplet"></i></div>
+            <div><h2>AquaTrack</h2><span>Citizen Portal</span></div>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="active"><a href="home.html"><i class="fa-solid fa-house"></i>Home</a></li>
+            <li><a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i>History</a></li>
+            <li><a href="report.html"><i class="fa-solid fa-triangle-exclamation"></i>Report Issue</a></li>
+            <li><a href="profile.html"><i class="fa-solid fa-user"></i>Profile</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <span class="user-name" id="sidebarName">—</span>
+            <span class="user-label">Citizen Account</span>
+            <button class="logout-link" id="logoutBtn">Log out</button>
+        </div>
+    </aside>
+
+    <main class="page-content">
+
+        <div class="topbar">
+            <div class="greeting">
+                <span>Good day,</span>
+                <h1 id="userName">...</h1>
+            </div>
+            <div class="alert-badge" id="alertBadge">
+                <i class="fa-solid fa-bell"></i>
+                <span class="dot"></span>
+            </div>
+        </div>
+
+        <div id="loadingState" class="loading-text">Loading your dashboard...</div>
+        <div id="errorState" class="error-box"></div>
+
+        <div id="dashboardContent" style="display:none;">
+
+            <div class="balance-card">
+                <div class="label">
+                    <span>Estimated Balance Remaining</span>
+                    <span class="balance-status" id="meterStatus">Active</span>
+                </div>
+                <div class="balance-amount" id="balanceAmount">—</div>
+                <div class="balance-row">
+                    <div>
+                        <span>Used this month</span>
+                        <strong id="usedThisMonth">—</strong>
+                    </div>
+                    <div style="text-align:right;">
+                        <span>Bill forecast</span>
+                        <strong id="billForecast">—</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mini-cards">
+                <div class="mini-card">
+                    <span>Last Bill</span>
+                    <h3 id="lastBillAmount">—</h3>
+                </div>
+                <div class="mini-card">
+                    <span>Payment Status</span>
+                    <h3 id="lastBillStatus">—</h3>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Daily Usage This Month</h3>
+                <div class="bars" id="usageBars"></div>
+            </div>
+
+            <div id="warningBanner" class="warning-banner" style="display:none;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span id="warningText"></span>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<nav class="bottom-nav">
+    <a href="home.html" class="nav-item active"><i class="fa-solid fa-house"></i>Home</a>
+    <a href="history.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i>History</a>
+    <a href="report.html" class="nav-item"><i class="fa-solid fa-triangle-exclamation"></i>Report</a>
+    <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i>Profile</a>
+</nav>
+
+<script src="../../services/api.js"></script>
+<script src="citizen.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        if (!requireCitizen()) return;
+
+        const user = window.aquatrackApi.getUser();
+        const firstName = user?.full_name?.split(" ")[0] || "there";
+        document.getElementById("userName").textContent = firstName;
+        document.getElementById("sidebarName").textContent = user?.full_name || "Citizen";
+
+        try {
+            const [summary, alerts] = await Promise.all([
+                window.aquatrackApi.getMySummary(),
+                window.aquatrackApi.getMyAlerts(),
+            ]);
+
+            document.getElementById("loadingState").style.display = "none";
+            document.getElementById("dashboardContent").style.display = "block";
+
+            document.getElementById("meterStatus").textContent =
+                summary.meter_status.charAt(0).toUpperCase() + summary.meter_status.slice(1);
+
+            document.getElementById("usedThisMonth").textContent = formatLiters(summary.used_this_month_liters);
+            document.getElementById("billForecast").textContent = formatRWF(summary.last_bill_amount);
+            document.getElementById("balanceAmount").textContent = formatRWF(summary.last_bill_amount);
+            document.getElementById("lastBillAmount").textContent = formatRWF(summary.last_bill_amount);
+            document.getElementById("lastBillStatus").textContent = summary.last_bill_paid === null
+                ? "No bill yet"
+                : (summary.last_bill_paid ? "Paid" : "Unpaid");
+
+            const barsContainer = document.getElementById("usageBars");
+            if (summary.daily_readings.length === 0) {
+                barsContainer.innerHTML = '<p style="color:#999;font-size:13px;">No readings recorded yet this month.</p>';
+            } else {
+                const maxVal = Math.max(...summary.daily_readings.map(r => r.liters || 0), 1);
+                const recent = summary.daily_readings.slice(-7);
+                barsContainer.innerHTML = recent.map((r, i) => {
+                    const heightPct = Math.max(6, Math.round((r.liters / maxVal) * 100));
+                    const isToday = i === recent.length - 1;
+                    const day = new Date(r.date).toLocaleDateString("en-GB", { weekday: "short" });
+                    return `<div class="bar-col">
+                    <div class="bar ${isToday ? "today" : ""}" style="height:${heightPct}%;"></div>
+                    <span>${day}</span>
+                </div>`;
+                }).join("");
+            }
+
+            if (alerts && alerts.length > 0) {
+                document.getElementById("alertBadge").classList.add("has-alerts");
+                const banner = document.getElementById("warningBanner");
+                banner.style.display = "flex";
+                document.getElementById("warningText").textContent = alerts[0].message || "You have an active alert on your account.";
+            }
+
+        } catch (err) {
+            document.getElementById("loadingState").style.display = "none";
+            const errBox = document.getElementById("errorState");
+            errBox.style.display = "block";
+            errBox.textContent = err.message || "Could not load your dashboard. Please try again.";
+        }
+    });
+</script>
+
+</body>
+</html>

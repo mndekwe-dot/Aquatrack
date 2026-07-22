@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const Meter = require('./meter.model');
-const { protect } = require('../../middleware/auth');
+const MeterReading = require('./meter_reading.model');
+const { protect, staffOnly } = require('../../middleware/auth');
 
-router.get('/', protect, async (req, res) => {
+router.get('/', protect, staffOnly, async (req, res) => {
   try {
     const meters = await Meter.findAll();
     res.json(meters);
@@ -11,7 +12,7 @@ router.get('/', protect, async (req, res) => {
   }
 });
 
-router.post('/', protect, async (req, res) => {
+router.post('/', protect, staffOnly, async (req, res) => {
   try {
     const meter = await Meter.create(req.body);
     res.status(201).json(meter);
@@ -20,7 +21,7 @@ router.post('/', protect, async (req, res) => {
   }
 });
 
-router.get('/:id', protect, async (req, res) => {
+router.get('/:id', protect, staffOnly, async (req, res) => {
   try {
     const meter = await Meter.findByPk(req.params.id);
     if (!meter) return res.status(404).json({ message: 'Meter not found' });
@@ -31,19 +32,32 @@ router.get('/:id', protect, async (req, res) => {
 });
 
 // Record a new meter reading
-router.patch('/:id/reading', protect, async (req, res) => {
+router.patch('/:id/reading', protect, staffOnly, async (req, res) => {
   try {
     const meter = await Meter.findByPk(req.params.id);
     if (!meter) return res.status(404).json({ message: 'Meter not found' });
-    const { reading, reading_date } = req.body;
-    await meter.update({ last_reading: reading, last_reading_date: reading_date });
-    res.json({ message: 'Reading recorded', meter });
+
+    const { reading_value, reading_date } = req.body;
+    const delta = reading_value - (meter.last_reading || 0);
+
+    await MeterReading.create({
+      meter_id: meter.id,
+      household_id: meter.household_id,
+      reading_value,
+      consumption_delta: delta,
+      reading_date: reading_date || new Date(),
+      recorded_by: req.user.id,
+    });
+
+    await meter.update({ last_reading: reading_value, last_reading_date: reading_date || new Date() });
+
+    res.json({ message: 'Reading recorded', meter, consumption_delta: delta });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-router.put('/:id', protect, async (req, res) => {
+router.put('/:id', protect, staffOnly, async (req, res) => {
   try {
     const meter = await Meter.findByPk(req.params.id);
     if (!meter) return res.status(404).json({ message: 'Meter not found' });
@@ -54,7 +68,7 @@ router.put('/:id', protect, async (req, res) => {
   }
 });
 
-router.delete('/:id', protect, async (req, res) => {
+router.delete('/:id', protect, staffOnly, async (req, res) => {
   try {
     const meter = await Meter.findByPk(req.params.id);
     if (!meter) return res.status(404).json({ message: 'Meter not found' });

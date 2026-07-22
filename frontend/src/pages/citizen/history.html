@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History | AquaTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="citizen.css">
+    <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="citizen-layout">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><i class="fa-solid fa-droplet"></i></div>
+            <div><h2>AquaTrack</h2><span>Citizen Portal</span></div>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="home.html"><i class="fa-solid fa-house"></i>Home</a></li>
+            <li class="active"><a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i>History</a></li>
+            <li><a href="report.html"><i class="fa-solid fa-triangle-exclamation"></i>Report Issue</a></li>
+            <li><a href="profile.html"><i class="fa-solid fa-user"></i>Profile</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <span class="user-name" id="sidebarName">—</span>
+            <span class="user-label">Citizen Account</span>
+            <button class="logout-link" id="logoutBtn">Log out</button>
+        </div>
+    </aside>
+
+    <main class="page-content">
+
+        <div class="page-heading">
+            <h1>Usage & Billing History</h1>
+            <p>Your past readings and bills</p>
+        </div>
+
+        <div id="loadingState" class="loading-text">Loading history...</div>
+        <div id="errorState" class="error-box"></div>
+
+        <div id="historyContent" style="display:none;">
+
+            <div class="chart-card">
+                <h3>Billing History</h3>
+                <div class="table-card" id="billingTableWrap">
+                    <table>
+                        <thead>
+                        <tr><th>Period</th><th>Usage</th><th>Amount</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="billingTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>My Reported Issues</h3>
+                <div class="table-card" id="issuesTableWrap">
+                    <table>
+                        <thead>
+                        <tr><th>Type</th><th>Description</th><th>Status</th><th>Date</th></tr>
+                        </thead>
+                        <tbody id="issuesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<nav class="bottom-nav">
+    <a href="home.html" class="nav-item"><i class="fa-solid fa-house"></i>Home</a>
+    <a href="history.html" class="nav-item active"><i class="fa-solid fa-clock-rotate-left"></i>History</a>
+    <a href="report.html" class="nav-item"><i class="fa-solid fa-triangle-exclamation"></i>Report</a>
+    <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i>Profile</a>
+</nav>
+
+<script src="../../services/api.js"></script>
+<script src="citizen.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        if (!requireCitizen()) return;
+
+        const user = window.aquatrackApi.getUser();
+        if (document.getElementById("sidebarName")) {
+            document.getElementById("sidebarName").textContent = user?.full_name || "Citizen";
+        }
+
+        try {
+            const [bills, issues] = await Promise.all([
+                window.aquatrackApi.getMyBills(),
+                window.aquatrackApi.getMyIssues(),
+            ]);
+
+            document.getElementById("loadingState").style.display = "none";
+            document.getElementById("historyContent").style.display = "block";
+
+            const billingBody = document.getElementById("billingTableBody");
+            if (bills.length === 0) {
+                document.getElementById("billingTableWrap").innerHTML = '<div class="empty-state">No bills generated yet.</div>';
+            } else {
+                billingBody.innerHTML = bills.map(b => `
+                <tr>
+                    <td>${formatDate(b.period_start)} – ${formatDate(b.period_end)}</td>
+                    <td>${formatLiters(b.consumption)}</td>
+                    <td>${formatRWF(b.amount_due)}</td>
+                    <td>${b.paid ? "Paid" : "Unpaid"}</td>
+                </tr>`).join("");
+            }
+
+            const issuesBody = document.getElementById("issuesTableBody");
+            if (issues.length === 0) {
+                document.getElementById("issuesTableWrap").innerHTML = '<div class="empty-state">You haven\'t reported any issues yet.</div>';
+            } else {
+                issuesBody.innerHTML = issues.map(i => `
+                <tr>
+                    <td>${i.issue_type.replace("_", " ")}</td>
+                    <td>${i.description ? i.description.slice(0, 30) + (i.description.length > 30 ? "…" : "") : "—"}</td>
+                    <td>${i.status.replace("_", " ")}</td>
+                    <td>${formatDate(i.createdAt)}</td>
+                </tr>`).join("");
+            }
+
+        } catch (err) {
+            document.getElementById("loadingState").style.display = "none";
+            const errBox = document.getElementById("errorState");
+            errBox.style.display = "block";
+            errBox.textContent = err.message || "Could not load your history.";
+        }
+    });
+</script>
+
+</body>
+</html>
