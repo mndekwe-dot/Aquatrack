@@ -13,7 +13,6 @@ const protect = (req, res, next) => {
   }
 };
 
-// Any WASAC staff member but not a citizen account
 const staffOnly = (req, res, next) => {
   if (req.user?.role === 'citizen' || !req.user?.role) {
     return res.status(403).json({ message: 'WASAC staff access required' });

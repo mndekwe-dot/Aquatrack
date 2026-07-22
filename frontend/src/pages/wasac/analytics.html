@@ -91,12 +91,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("statAlertsMonth").textContent = alerts.filter(a => isThisMonth(a.createdAt)).length;
         document.getElementById("statReportsMonth").textContent = issues.filter(i => isThisMonth(i.createdAt)).length;
 
+        // Build a household_id -> sector lookup so we can attribute alerts (which only have meter_id) to a sector via the issues data,
+        // and directly use sector from issue reports (which already store it).
         const sectorCounts = {};
         issues.forEach(i => {
             const key = i.sector || "Unknown";
             sectorCounts[key] = sectorCounts[key] || { alerts: 0, reports: 0 };
             sectorCounts[key].reports += 1;
         });
+        // Open alerts don't carry a sector directly in this schema — group them under "Unassigned" unless
+        // your team adds a sector field to the Alert model, or joins via Meter → Household → sector server-side.
         const openAlerts = alerts.filter(a => !a.resolved);
         if (openAlerts.length) {
             sectorCounts["Unassigned (link Meter→Household to break this down)"] = { alerts: openAlerts.length, reports: 0 };

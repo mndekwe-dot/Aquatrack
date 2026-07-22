@@ -3,7 +3,6 @@ const Report = require('./report.model');
 const IssueReport = require('./issue_report.model');
 const { protect, staffOnly, citizenOnly } = require('../../middleware/auth');
 
-// BILLING REPORTS
 // WASAC staff — all billing reports
 router.get('/billing', protect, staffOnly, async (req, res) => {
   try {
@@ -14,7 +13,7 @@ router.get('/billing', protect, staffOnly, async (req, res) => {
   }
 });
 
-// Citizen their own billing history (used by the History page)
+// Citizen their own billing history
 router.get('/billing/mine', protect, citizenOnly, async (req, res) => {
   try {
     const reports = await Report.findAll({
@@ -47,9 +46,6 @@ router.patch('/billing/:id/paid', protect, staffOnly, async (req, res) => {
   }
 });
 
-// CITIZEN ISSUE REPORTS (leak / no water / low pressure / other)
-
-// Citizen — submit a new issue report
 router.post('/issues', protect, citizenOnly, async (req, res) => {
   try {
     const { issue_type, duration, description, sector, district } = req.body;
@@ -69,7 +65,7 @@ router.post('/issues', protect, citizenOnly, async (req, res) => {
   }
 });
 
-// Citizen  their own submitted issues History page can show these too
+// Citizen their own submitted issues
 router.get('/issues/mine', protect, citizenOnly, async (req, res) => {
   try {
     const issues = await IssueReport.findAll({
@@ -82,7 +78,7 @@ router.get('/issues/mine', protect, citizenOnly, async (req, res) => {
   }
 });
 
-// WASAC staff all citizen issue reports (the "Reports" wireframe page, with filters
+// WASAC staff all citizen issue report
 router.get('/issues', protect, staffOnly, async (req, res) => {
   try {
     const { issue_type } = req.query;

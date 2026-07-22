@@ -1,3 +1,4 @@
+// Change this to your deployed backend URL when you go live
 const API_BASE_URL = "http://localhost:5000/api";
 
 function getToken() {
@@ -25,7 +26,6 @@ function getUser() {
   return raw ? JSON.parse(raw) : null;
 }
 
-// Core request wrapper — attaches the JWT automatically, throws readable errors
 async function request(path, { method = "GET", body, auth = true } = {}) {
   const headers = { "Content-Type": "application/json" };
 

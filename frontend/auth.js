@@ -1,7 +1,3 @@
-// ===========================
-// auth.js — real backend integration, no mock/fake data
-// ===========================
-
 function showError(message) {
   const box = document.getElementById("errorBox");
   if (!box) { alert(message); return; }
@@ -17,7 +13,7 @@ function setLoading(btn, isLoading, idleText) {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ---- LOGIN ----
+  // LOGIN
   const loginForm = document.getElementById("loginForm");
   if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
@@ -40,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ---- REGISTER ----
+  // REGISTER
   const registerForm = document.getElementById("registerForm");
   if (registerForm) {
     registerForm.addEventListener("submit", async (e) => {

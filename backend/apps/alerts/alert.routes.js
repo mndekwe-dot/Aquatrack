@@ -13,7 +13,7 @@ router.get('/', protect, staffOnly, async (req, res) => {
   }
 });
 
-// Citizen only their own alerts used by the citizen dashboard "low balance / leak" banners
+// Citizen  only their own alert
 router.get('/mine', protect, citizenOnly, async (req, res) => {
   try {
     const meter = await Meter.findOne({ where: { household_id: req.user.id } });

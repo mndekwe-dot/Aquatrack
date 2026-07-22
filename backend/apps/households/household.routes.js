@@ -115,7 +115,6 @@ router.put('/me', protect, citizenOnly, async (req, res) => {
   }
 });
 
-// GET /api/households/me/summary
 router.get('/me/summary', protect, citizenOnly, async (req, res) => {
   try {
     const household = await Household.findByPk(req.user.id, { attributes: PUBLIC_ATTRS });

@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const Household = sequelize.define('Household', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 
-  //  login fields (citizen account)
+  // login fields
   full_name: { type: DataTypes.STRING, allowNull: false },
   phone: {
     type: DataTypes.STRING,

@@ -113,7 +113,6 @@ body {
     font-weight: 600;
 }
 
-
 .page-content {
     flex: 1;
     margin-left: 250px;
@@ -218,6 +217,7 @@ body {
     margin-top: 2px;
 }
 
+/* ===== MINI CARDS ===== */
 .mini-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -243,7 +243,6 @@ body {
     color: #2563eb;
 }
 
-/* CHART CARD */
 .chart-card {
     background: #fff;
     border-radius: 18px;
@@ -293,6 +292,7 @@ body {
     color: #888;
 }
 
+/* WARNING BANNER */
 .warning-banner {
     background: #fef3c7;
     color: #92400e;
@@ -430,7 +430,6 @@ td {
     margin-bottom: 20px;
     display: none;
 }
-
 .profile-header {
     text-align: center;
     padding: 10px 0 24px;
@@ -575,13 +574,13 @@ input:checked + .slider::before { transform: translateX(18px); }
 
 .nav-item i { font-size: 18px; }
 .nav-item.active { color: #2563eb; }
-
 .loading-text {
     text-align: center;
     color: #999;
     padding: 60px 20px;
     font-size: 14px;
 }
+
 @media (max-width: 1024px) {
     .sidebar { width: 220px; }
     .page-content { margin-left: 220px; padding: 24px 24px; }

@@ -31,7 +31,7 @@ router.get('/:id', protect, staffOnly, async (req, res) => {
   }
 });
 
-// Record a new meter reading
+// Record a new meter reading — also updates the meter's last_reading and logs consumption delta
 router.patch('/:id/reading', protect, staffOnly, async (req, res) => {
   try {
     const meter = await Meter.findByPk(req.params.id);

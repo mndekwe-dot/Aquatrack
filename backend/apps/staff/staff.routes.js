@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// POST /api/staff/register
+// POST /api/staff/register admin only new staff accounts are created by an admin
 router.post('/register', protect, adminOnly, async (req, res) => {
   try {
     const staff = await Staff.create(req.body);
@@ -118,7 +118,7 @@ router.post('/change-password', protect, async (req, res) => {
   }
 });
 
-// POST /api/staff/create
+// POST /api/staff/create (admin creates staff account with temp password)
 router.post('/create', protect, adminOnly, async (req, res) => {
   try {
     const { name, email, phone, role, temp_password } = req.body;
