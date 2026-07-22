@@ -37,3 +37,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    // Citizen Login
+    const citizenForm = document.getElementById("citizenLoginForm");
+
+    if (citizenForm) {
+        citizenForm.addEventListener("submit", function(e) {
+
+            e.preventDefault();
+
+            window.location.href = "citizen-dashboard.html";
+
+        });
+    }
+
+    // WASAC Login
+    const wasacForm = document.getElementById("wasacLoginForm");
+
+    if (wasacForm) {
+        wasacForm.addEventListener("submit", function(e) {
+
+            e.preventDefault();
+
+            window.location.href = "wasac-dashboard.html";
+
+        });
+    }
+
+});

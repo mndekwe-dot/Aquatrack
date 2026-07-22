@@ -1,82 +1,46 @@
-// js/wasac.js
-
 document.addEventListener("DOMContentLoaded", () => {
-
-    // ==========================
-    // Water Distribution Chart
-    // ==========================
 
     const ctx = document.getElementById("waterChart");
 
-    if (ctx) {
+    if(ctx){
 
-        new Chart(ctx, {
+        new Chart(ctx,{
 
-            type: "line",
+            type:"line",
 
-            data: {
+            data:{
 
-                labels: [
-                    "Jan",
-                    "Feb",
-                    "Mar",
-                    "Apr",
-                    "May",
-                    "Jun",
-                    "Jul"
-                ],
+                labels:["Jan","Feb","Mar","Apr","May","Jun","Jul"],
 
-                datasets: [
+                datasets:[
 
                     {
 
-                        label: "Water Produced",
+                        label:"Water Produced",
 
-                        data: [
-                            1800,
-                            1950,
-                            2100,
-                            2250,
-                            2150,
-                            2300,
-                            2450
-                        ],
+                        data:[1800,1950,2100,2250,2150,2300,2450],
 
-                        borderColor: "#2563EB",
+                        borderColor:"#2563EB",
 
-                        backgroundColor: "rgba(37,99,235,0.12)",
+                        backgroundColor:"rgba(37,99,235,.12)",
 
-                        fill: true,
+                        fill:true,
 
-                        tension: 0.4,
-
-                        pointRadius: 5
+                        tension:.4
 
                     },
 
                     {
 
-                        label: "Water Billed",
+                        label:"Water Billed",
 
-                        data: [
-                            1200,
-                            1350,
-                            1480,
-                            1600,
-                            1580,
-                            1700,
-                            1820
-                        ],
+                        data:[1200,1350,1480,1600,1580,1700,1820],
 
-                        borderColor: "#10B981",
+                        borderColor:"#10B981",
 
-                        backgroundColor: "rgba(16,185,129,0.08)",
+                        fill:false,
 
-                        fill: false,
-
-                        tension: 0.4,
-
-                        pointRadius: 5
+                        tension:.4
 
                     }
 
@@ -84,39 +48,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             },
 
-            options: {
+            options:{
 
-                responsive: true,
+                responsive:true,
 
-                maintainAspectRatio: false,
+                maintainAspectRatio:false,
 
-                plugins: {
-
-                    legend: {
-
-                        position: "top"
-
-                    }
-
-                },
-
-                scales: {
-
-                    y: {
-
-                        beginAtZero: true,
-
-                        title: {
-
-                            display: true,
-
-                            text: "Water (m³)"
-
-                        }
-
-                    }
-
-                }
+                animation:false
 
             }
 
@@ -124,17 +62,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-    // ==========================
-    // Sidebar Active State
-    // ==========================
+    const menuItems=document.querySelectorAll(".sidebar li");
 
-    const menuItems = document.querySelectorAll(".sidebar li");
+    menuItems.forEach(item=>{
 
-    menuItems.forEach(item => {
+        item.addEventListener("click",()=>{
 
-        item.addEventListener("click", () => {
-
-            menuItems.forEach(i => i.classList.remove("active"));
+            menuItems.forEach(i=>i.classList.remove("active"));
 
             item.classList.add("active");
 
@@ -142,38 +76,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
-    // ==========================
-    // Table Row Click
-    // ==========================
+    document.querySelectorAll("tbody tr").forEach(row=>{
 
-    document.querySelectorAll("tbody tr").forEach(row => {
+        row.addEventListener("click",()=>{
 
-        row.addEventListener("click", () => {
-
-            const firstCell = row.cells[0].innerText;
-
-            alert("Viewing details for " + firstCell);
+            alert("Viewing details for "+row.cells[0].innerText);
 
         });
 
     });
-
-    // ==========================
-    // Demo Live Statistics
-    // ==========================
-
-    const statCards = document.querySelectorAll(".card h2");
-
-    setInterval(() => {
-
-        if(statCards.length >= 4){
-
-            const alerts = 30 + Math.floor(Math.random() * 15);
-
-            statCards[2].innerText = alerts;
-
-        }
-
-    }, 5000);
 
 });
