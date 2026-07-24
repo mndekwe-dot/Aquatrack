@@ -29,9 +29,12 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
+const { startPoller } = require('./poller');
+
 sequelize.sync({ alter: true }).then(() => {
   console.log('Database synced');
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  startPoller();
 }).catch((err) => {
   console.error('Failed to connect to database:', err.message);
 });
