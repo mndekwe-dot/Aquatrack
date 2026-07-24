@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerts | WASAC Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="wasac.css">
+    <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-droplet"></i>
+            <div><h2>AquaTrack</h2><span>WASAC Staff</span></div>
+        </div>
+        <ul class="menu">
+            <li><a href="overview.html"><i class="fa-solid fa-gauge"></i>Overview</a></li>
+            <li class="active"><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i>Alerts</a></li>
+            <li><a href="reports.html"><i class="fa-solid fa-file-lines"></i>Reports</a></li>
+            <li><a href="analytics.html"><i class="fa-solid fa-chart-column"></i>Analytics</a></li>
+            <li><a href="districts.html"><i class="fa-solid fa-map-location-dot"></i>Districts</a></li>
+            <li><a href="staff.html"><i class="fa-solid fa-users-gear"></i>Staff</a></li>
+        </ul>
+        <div class="staff-footer" id="staffFooter"></div>
+    </aside>
+
+    <main class="content">
+
+        <div class="topbar">
+            <div>
+                <h1>Alerts</h1>
+                <p>Anomaly and leak detection alerts</p>
+            </div>
+        </div>
+
+        <div id="errorBanner" class="error-banner"></div>
+        <div id="loadingState" class="loading-text">Loading alerts...</div>
+
+        <div id="alertsContent" style="display:none;">
+
+            <div class="filter-tabs" id="filterTabs">
+                <button class="filter-tab active" data-filter="all">All Alerts</button>
+                <button class="filter-tab" data-filter="leak">Leak</button>
+                <button class="filter-tab" data-filter="high_usage">Usage Spike</button>
+                <button class="filter-tab" data-filter="faulty_meter">Faulty Meter</button>
+                <button class="filter-tab" data-filter="unresolved">Unresolved Only</button>
+            </div>
+
+            <div class="table-card">
+                <table>
+                    <thead><tr><th>Meter</th><th>Type</th><th>Message</th><th>Severity</th><th>Status</th><th>Flagged</th><th></th></tr></thead>
+                    <tbody id="alertsTableBody"></tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="../../services/api.js"></script>
+<script src="wasac.js"></script>
+<script>
+let allAlerts = [];
+let currentFilter = "all";
+
+function renderAlerts() {
+    const filtered = allAlerts.filter(a => {
+        if (currentFilter === "all") return true;
+        if (currentFilter === "unresolved") return !a.resolved;
+        return a.type === currentFilter;
+    });
+
+    const body = document.getElementById("alertsTableBody");
+    body.innerHTML = filtered.length ? filtered.map(a => `
+        <tr>
+            <td>MTR-${String(a.meter_id).padStart(4, "0")}</td>
+            <td>${a.type.replace("_", " ")}</td>
+            <td>${a.message || "—"}</td>
+            <td><span class="badge ${a.severity}">${a.severity}</span></td>
+            <td><span class="badge ${a.resolved ? "resolved" : "open"}">${a.resolved ? "Resolved" : "Open"}</span></td>
+            <td>${formatDate(a.createdAt)}</td>
+            <td>${a.resolved ? "" : `<button class="btn-small" data-id="${a.id}">Resolve</button>`}</td>
+        </tr>`).join("") : '<tr><td colspan="7" class="empty-state">No alerts match this filter.</td></tr>';
+
+    body.querySelectorAll("button[data-id]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+            btn.disabled = true;
+            btn.textContent = "...";
+            try {
+                await window.aquatrackApi.resolveAlert(btn.dataset.id);
+                const alert = allAlerts.find(a => String(a.id) === btn.dataset.id);
+                if (alert) { alert.resolved = true; }
+                renderAlerts();
+            } catch (err) {
+                alert("Could not resolve alert: " + err.message);
+                btn.disabled = false;
+                btn.textContent = "Resolve";
+            }
+        });
+    });
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    if (!requireStaff()) return;
+
+    document.getElementById("filterTabs").addEventListener("click", (e) => {
+        if (!e.target.classList.contains("filter-tab")) return;
+        document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+        e.target.classList.add("active");
+        currentFilter = e.target.dataset.filter;
+        renderAlerts();
+    });
+
+    try {
+        allAlerts = await window.aquatrackApi.getAllAlerts();
+        document.getElementById("loadingState").style.display = "none";
+        document.getElementById("alertsContent").style.display = "block";
+        renderAlerts();
+    } catch (err) {
+        document.getElementById("loadingState").style.display = "none";
+        const banner = document.getElementById("errorBanner");
+        banner.style.display = "block";
+        banner.textContent = err.message || "Could not load alerts.";
+    }
+});
+</script>
+
+</body>
+</html>

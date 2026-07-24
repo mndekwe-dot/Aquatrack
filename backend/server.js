@@ -1,9 +1,13 @@
 require('dotenv').config();
+
+console.log("DB_PORT =", process.env.DB_PORT);
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const sequelize = require('./config/database');
+const path = require("path");
 
 const app = express();
 
@@ -11,6 +15,7 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "../frontend")));
 
 app.use('/api/staff', require('./apps/staff/staff.routes'));
 app.use('/api/households', require('./apps/households/household.routes'));
@@ -21,6 +26,10 @@ app.use('/api/notifications', require('./apps/notifications/notification.routes'
 app.use('/api/messages', require('./apps/messaging/message.routes'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

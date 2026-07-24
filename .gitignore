@@ -2,11 +2,29 @@
 .env
 *.env
 
-# OS files
+# Node
+node_modules/
+package-lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+env/
+.venv/
+
+# OS
 .DS_Store
 Thumbs.db
 
 # Editor
 .vscode/
 .idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Untracked docs
 docs/proposal/Poster_Task_Division.md
+meter-simulator/__pycache__/server.cpython-313.pyc

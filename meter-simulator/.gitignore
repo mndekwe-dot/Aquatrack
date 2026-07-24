@@ -2,10 +2,16 @@
 __pycache__/
 *.py[cod]
 *.pyo
-.env
+*.pyd
+
+# Virtual environments
 venv/
 env/
 .venv/
+
+# Environment files
+.env
+*.env
 
 # OS
 .DS_Store
