@@ -23,3 +23,5 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+docs/proposal/Poster_Task_Division.md
+meter-simulator/__pycache__/server.cpython-313.pyc
