@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/database');
 
+// Billing report
 const Report = sequelize.define('Report', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   household_id: { type: DataTypes.INTEGER },

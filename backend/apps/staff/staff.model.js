@@ -10,10 +10,18 @@ const Staff = sequelize.define('Staff', {
   role: { type: DataTypes.ENUM('admin', 'meter_reader', 'technician', 'billing'), defaultValue: 'meter_reader' },
   phone: { type: DataTypes.BIGINT },
   active: { type: DataTypes.BOOLEAN, defaultValue: true },
+  must_change_password: { type: DataTypes.BOOLEAN, defaultValue: false },
+
 });
 
 Staff.beforeCreate(async (staff) => {
   staff.password = await bcrypt.hash(staff.password, 10);
+});
+
+Staff.beforeUpdate(async (staff) => {
+  if (staff.changed('password')) {
+    staff.password = await bcrypt.hash(staff.password, 10);
+  }
 });
 
 Staff.prototype.validatePassword = async function (password) {

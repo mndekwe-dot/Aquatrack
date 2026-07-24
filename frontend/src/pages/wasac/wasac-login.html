@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WASAC Staff Login | AquaTrack Rwanda</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="wasac.css">
+    <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+</head>
+<body class="login-body">
+
+<div class="staff-login-card">
+    <div class="staff-login-logo">
+        <i class="fa-solid fa-droplet"></i>
+    </div>
+    <h2>WASAC Staff Portal</h2>
+    <p class="staff-login-sub">Authorized staff only</p>
+
+    <div id="errorBox" class="error-box" style="display:none;"></div>
+
+    <form id="staffLoginForm">
+        <div class="form-group">
+            <label>Work Email</label>
+            <input type="email" id="email" placeholder="you@wasac.rw" required>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn-primary" id="submitBtn">Log In</button>
+    </form>
+
+    <p class="staff-login-security">🔒 Access restricted to authorized WASAC staff</p>
+
+    <div class="back-link">
+        <a href="../../../index.html">← Back to Home</a> &nbsp;|&nbsp;
+        <a href="../../../login.html">Citizen Login</a>
+    </div>
+</div>
+
+<script src="../../services/api.js"></script>
+<script>
+document.getElementById("staffLoginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("submitBtn");
+    const errorBox = document.getElementById("errorBox");
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    btn.disabled = true;
+    btn.textContent = "Please wait...";
+    errorBox.style.display = "none";
+
+    try {
+        const data = await window.aquatrackApi.staffLogin(email, password);
+        window.aquatrackApi.setSession(data.token, data.user, data.user.role);
+
+        // If first login, redirect to change password page
+        if (data.must_change_password) {
+            window.location.href = "change-password.html";
+        } else {
+            window.location.href = "overview.html";
+        }
+    } catch (err) {
+        errorBox.textContent = err.message || "Login failed. Please check your credentials.";
+        errorBox.style.display = "block";
+        window.location.href= "wasac-login.html";
+    }finally {
+        btn.disabled = false;
+        btn.textContent = "Log In";
+    }
+});
+</script>
+
+</body>
+</html>

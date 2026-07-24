@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | WASAC Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="wasac.css">
+    <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-droplet"></i>
+            <div><h2>AquaTrack</h2><span>WASAC Staff</span></div>
+        </div>
+        <ul class="menu">
+            <li><a href="overview.html"><i class="fa-solid fa-gauge"></i>Overview</a></li>
+            <li><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i>Alerts</a></li>
+            <li class="active"><a href="reports.html"><i class="fa-solid fa-file-lines"></i>Reports</a></li>
+            <li><a href="analytics.html"><i class="fa-solid fa-chart-column"></i>Analytics</a></li>
+            <li><a href="districts.html"><i class="fa-solid fa-map-location-dot"></i>Districts</a></li>
+            <li><a href="staff.html"><i class="fa-solid fa-users-gear"></i>Staff</a></li>
+        </ul>
+        <div class="staff-footer" id="staffFooter"></div>
+    </aside>
+
+    <main class="content">
+
+        <div class="topbar">
+            <div>
+                <h1>Citizen Reports</h1>
+                <p>Issues reported directly by citizens</p>
+            </div>
+        </div>
+
+        <div id="errorBanner" class="error-banner"></div>
+        <div id="loadingState" class="loading-text">Loading reports...</div>
+
+        <div id="reportsContentWrap" style="display:none;">
+
+            <div class="filter-tabs" id="filterTabs">
+                <button class="filter-tab active" data-filter="all">All Reports</button>
+                <button class="filter-tab" data-filter="no_water">No Water</button>
+                <button class="filter-tab" data-filter="leak">Leak Visible</button>
+                <button class="filter-tab" data-filter="low_pressure">Low Pressure</button>
+                <button class="filter-tab" data-filter="other">Other</button>
+            </div>
+
+            <div class="table-card">
+                <table>
+                    <thead><tr><th>District / Sector</th><th>Issue</th><th>Message</th><th>Status</th><th>Flagged</th><th>Action</th></tr></thead>
+                    <tbody id="reportsTableBody"></tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="../../services/api.js"></script>
+<script src="wasac.js"></script>
+<script>
+let allIssues = [];
+let currentFilter = "all";
+
+function renderIssues() {
+    const filtered = currentFilter === "all" ? allIssues : allIssues.filter(i => i.issue_type === currentFilter);
+
+    const body = document.getElementById("reportsTableBody");
+    body.innerHTML = filtered.length ? filtered.map(i => `
+        <tr>
+            <td>${i.district}, ${i.sector}</td>
+            <td>${i.issue_type.replace("_", " ")}</td>
+            <td>${i.description ? i.description.slice(0, 45) : "—"}</td>
+            <td><span class="badge ${i.status}">${i.status.replace("_", " ")}</span></td>
+            <td>${formatDate(i.createdAt)}</td>
+            <td>
+                ${i.status !== "resolved" ? `
+                    <select data-id="${i.id}" class="status-select" style="padding:6px 8px;border-radius:8px;border:1px solid #e2e8f0;font-size:12.5px;">
+                        <option value="">Update status…</option>
+                        <option value="in_progress" ${i.status === "in_progress" ? "selected" : ""}>In Progress</option>
+                        <option value="resolved">Mark Resolved</option>
+                    </select>
+                ` : ""}
+            </td>
+        </tr>`).join("") : '<tr><td colspan="6" class="empty-state">No reports match this filter.</td></tr>';
+
+    body.querySelectorAll(".status-select").forEach(sel => {
+        sel.addEventListener("change", async () => {
+            if (!sel.value) return;
+            const id = sel.dataset.id;
+            sel.disabled = true;
+            try {
+                await window.aquatrackApi.updateIssueStatus(id, { status: sel.value });
+                const issue = allIssues.find(i => String(i.id) === id);
+                if (issue) issue.status = sel.value;
+                renderIssues();
+            } catch (err) {
+                alert("Could not update status: " + err.message);
+                sel.disabled = false;
+            }
+        });
+    });
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    if (!requireStaff()) return;
+
+    document.getElementById("filterTabs").addEventListener("click", (e) => {
+        if (!e.target.classList.contains("filter-tab")) return;
+        document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+        e.target.classList.add("active");
+        currentFilter = e.target.dataset.filter;
+        renderIssues();
+    });
+
+    try {
+        allIssues = await window.aquatrackApi.getAllIssues();
+        document.getElementById("loadingState").style.display = "none";
+        document.getElementById("reportsContentWrap").style.display = "block";
+        renderIssues();
+    } catch (err) {
+        document.getElementById("loadingState").style.display = "none";
+        const banner = document.getElementById("errorBanner");
+        banner.style.display = "block";
+        banner.textContent = err.message || "Could not load reports.";
+    }
+});
+</script>
+
+</body>
+</html>
