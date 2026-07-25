@@ -1,0 +1,157 @@
+\documentclass[25pt, a0paper, landscape]{tikzposter}
+
+% ---------- Packages ----------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs,array}
+\usepackage{enumitem}
+\usepackage{qrcode}
+\usepackage{tikz}
+\usetikzlibrary{calc,positioning}
+
+% ---------- ALU-inspired palette ----------
+\definecolor{ALUBlue}{HTML}{002E6D}
+\definecolor{ALUBlueDark}{HTML}{001F49}
+\definecolor{ALUBlueLight}{HTML}{EAF1FB}
+\definecolor{ALUBlueLine}{HTML}{BFD0EA}
+\definecolor{ALUText}{HTML}{1E2A38}
+\definecolor{ALUMuted}{HTML}{5C6B7A}
+\definecolor{ALUWhite}{HTML}{FFFFFF}
+\definecolor{ALUAccent}{HTML}{D9E6F7}
+
+% ---------- Theme ----------
+\usetheme{Simple}
+\usecolorstyle{Default}
+\usebackgroundstyle{Default}
+
+\colorlet{backgroundcolor}{ALUWhite}
+\colorlet{framecolor}{ALUBlueLine}
+\colorlet{titlefgcolor}{white}
+\colorlet{titlebgcolor}{ALUBlue}
+\colorlet{blocktitlebgcolor}{ALUBlue}
+\colorlet{blocktitlefgcolor}{white}
+\colorlet{blockbodybgcolor}{white}
+\colorlet{blockbodyfgcolor}{ALUText}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.12em}
+\linespread{0.98}
+\setlist[itemize]{leftmargin=1.05em,itemsep=0.02em,topsep=0.02em,parsep=0pt,partopsep=0pt}
+
+% ---------- Block appearance ----------
+\defineblockstyle{ALUBlock}{
+    titlewidthscale=1, bodywidthscale=1, roundedcorners=16,
+    titleleft, titleoffsetx=0mm, titleoffsety=0mm,
+    bodyoffsetx=0mm, bodyoffsety=3.5mm,
+    bodyverticalshift=3.5mm, linewidth=1.0mm
+}{
+    \draw[rounded corners=16pt, line width=1.1mm, color=ALUBlueLine, fill=white]
+      (blockbody.south west) rectangle (blockbody.north east);
+    \ifBlockHasTitle
+      \draw[rounded corners=16pt, line width=0mm, fill=ALUBlue]
+      (blocktitle.south west) rectangle (blocktitle.north east);
+    \fi
+}
+\useblockstyle{ALUBlock}
+
+% ---------- Helpers ----------
+\newcommand{\takeawaybox}[1]{%
+  \begin{center}
+  \fcolorbox{ALUBlueLine}{ALUBlueLight}{
+    \parbox{0.94\linewidth}{\centering\bfseries\Large #1}
+  }
+  \end{center}
+}
+
+\newcommand{\posterimageplaceholder}[2][0.95\linewidth]{%
+  \begin{center}
+  \fcolorbox{ALUBlueLine}{ALUBlueLight}{
+    \parbox[c][6.6cm][c]{#1}{\centering\bfseries\Large #2\\[0.35em]\normalsize Replace with a polished figure, screenshot, architecture diagram, chart, or hardware photo}
+  }
+  \end{center}
+}
+
+\newcommand{\metricbox}[2]{%
+  \fcolorbox{ALUBlueLine}{ALUBlueLight}{
+    \parbox[c][2.9cm][c]{0.29\linewidth}{\centering\bfseries\LARGE #1\\[0.18em]\normalsize #2}
+  }
+}
+
+\newcommand{\projectmeta}[4]{%
+  \begin{tabular}{>{\bfseries}p{0.24\linewidth}p{0.69\linewidth}}
+    Team & #1\\[0.18em]
+    Programme & #2\\[0.18em]
+    Supervisors & #3\\[0.18em]
+    Demo / QR & #4
+  \end{tabular}
+}
+
+% ---------- Title ----------
+\title{AquaTrack Rwanda --- Smart Water Meter Monitoring System}
+\author{Merci Ndekwe \textbar\ Luigi \textbar\ Joseph \textbar\ Ange}
+\institute{African Leadership University \textbar\ BSc (Hons) Software Engineering \textbar\ Research + Demo Poster}
+\titlegraphic{\includegraphics[height=3.5cm]{alu-logo-white-full.png}}
+
+\begin{document}
+\maketitle
+
+\vspace{0.1cm}
+
+\begin{columns}
+
+% ================= LEFT COLUMN =================
+\column{0.30}
+
+\block{1. Problem, Context, and Users}{
+  \input{sections/s01_problem}
+}
+
+\block{2. Objectives and Scope}{
+  \input{sections/s02_objectives}
+}
+
+\block{3. Project Metadata}{
+  \input{sections/s03_metadata}
+}
+
+\block{4. Constraints and Design Decisions}{
+  \input{sections/s04_constraints}
+}
+
+% ================= MIDDLE COLUMN =================
+\column{0.40}
+
+\block{5. Proposed Solution and System Overview}{
+  \input{sections/s05_solution}
+}
+
+\block{6. Methodology and Build Process}{
+  \input{sections/s06_methodology}
+}
+
+\block{7. Results, Evaluation, and Demo Evidence}{
+  \input{sections/s07_results}
+}
+
+% ================= RIGHT COLUMN =================
+\column{0.30}
+
+\block{8. Impact, Contribution, and Learning}{
+  \input{sections/s08_impact}
+}
+
+\block{9. Limitations and Next Steps}{
+  \input{sections/s09_limitations}
+}
+
+\block{10. References and Acknowledgements}{
+  \input{sections/s10_references}
+}
+
+\end{columns}
+
+\end{document}
