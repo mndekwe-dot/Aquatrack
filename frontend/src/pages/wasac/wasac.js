@@ -41,3 +41,7 @@ function renderStaffFooter() {
 }
 
 document.addEventListener("DOMContentLoaded", renderStaffFooter);
+document.addEventListener("DOMContentLoaded",() =>{
+  applyTranslations();
+  window._onLangChange = () => applyTranslations();
+});

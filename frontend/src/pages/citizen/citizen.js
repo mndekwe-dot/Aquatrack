@@ -30,6 +30,8 @@ function formatDate(dateStr) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  applyTranslations();
+  window._onLangChange = () => applyTranslations();
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) logoutBtn.addEventListener("click", citizenLogout);
 });

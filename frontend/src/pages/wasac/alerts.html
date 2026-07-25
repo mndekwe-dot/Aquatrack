@@ -6,6 +6,7 @@
     <title>Alerts | WASAC Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="wasac.css">
+    <script src="../../services/i18n.js"></script>
     <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -18,12 +19,12 @@
             <div><h2>AquaTrack</h2><span>WASAC Staff</span></div>
         </div>
         <ul class="menu">
-            <li><a href="overview.html"><i class="fa-solid fa-gauge"></i>Overview</a></li>
-            <li class="active"><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i>Alerts</a></li>
-            <li><a href="reports.html"><i class="fa-solid fa-file-lines"></i>Reports</a></li>
-            <li><a href="analytics.html"><i class="fa-solid fa-chart-column"></i>Analytics</a></li>
-            <li><a href="districts.html"><i class="fa-solid fa-map-location-dot"></i>Districts</a></li>
-            <li><a href="staff.html"><i class="fa-solid fa-users-gear"></i>Staff</a></li>
+            <li><a href="overview.html"><i class="fa-solid fa-gauge"></i><span data-i18n="nav_overview">Overview</span></a></li>
+            <li class="active"><a href="alerts.html"><i class="fa-solid fa-triangle-exclamation"></i><span data-i18="nav_alerts">Alerts</span></a></li>
+            <li><a href="reports.html"><i class="fa-solid fa-file-lines"></i><span data-i18n="nav_reports">Reports</span></a></li>
+            <li><a href="analytics.html"><i class="fa-solid fa-chart-column"></i><span data-i18n="nav_analytics">Analytics</span></a></li>
+            <li><a href="districts.html"><i class="fa-solid fa-map-location-dot"></i><span data-i18n="nav-districts">Districts</span></a></li>
+            <li><a href="staff.html"><i class="fa-solid fa-users-gear"></i><span data-i18n="nav_staff">Staff</span></a></li>
         </ul>
         <div class="staff-footer" id="staffFooter"></div>
     </aside>
@@ -35,6 +36,9 @@
                 <h1>Alerts</h1>
                 <p>Anomaly and leak detection alerts</p>
             </div>
+            <button id="langBtn" onclick="toggleLang()" style="background:#f1f5f9;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:600;font-size:12.5px;color:#2563eb;margin-top: -20px" >
+                🌐 Kinyarwanda
+            </button>
         </div>
 
         <div id="errorBanner" class="error-banner"></div>
@@ -107,6 +111,8 @@ function renderAlerts() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+    applyTranslations();
+    window._onLangChange = () => applyTranslations();
     if (!requireStaff()) return;
 
     document.getElementById("filterTabs").addEventListener("click", (e) => {
