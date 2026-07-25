@@ -1,0 +1,24 @@
+% Owner: Merci Ndekwe
+
+\textbf{Database --- PostgreSQL + Sequelize ORM}
+\begin{itemize}
+  \item Chosen for its relational model: households, meters, and readings have clear foreign-key relationships a document store cannot enforce natively.
+  \item Sequelize hooks handle bcrypt password hashing on \texttt{beforeCreate}; \texttt{sync(\{alter:true\})} allows rapid schema iteration during development.
+  \item \textit{Trade-off:} \texttt{alter:true} is unsafe in production --- a migration-based approach is the planned next step.
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Meter Simulator --- FastAPI (Python, deployed on Railway)}
+\begin{itemize}
+  \item Three vendor types: \textbf{Kamstrup} (10 residential meters), \textbf{Susteq} (5 communal taps), \textbf{EoI} (5 prepaid home meters).
+  \item Readings accumulate by elapsed time $\times$ time-of-day usage curve --- near-zero flow at night, peak at 06:00--09:00 and 17:00--21:00.
+  \item Alarms are condition-triggered and persist across polls, not re-rolled randomly.
+  \item \textit{Trade-off:} State is in-memory --- a restart resets cumulative readings.
+\end{itemize}
+
+\vspace{0.3em}
+\textbf{Authentication --- Stateless JWT}
+\begin{itemize}
+  \item Two token keys enforce role separation: \texttt{aquatrack\_token} (WASAC staff) and \texttt{citizen\_token} (citizens).
+  \item \textit{Trade-off:} Tokens cannot be invalidated before expiry without a blacklist --- acceptable for project scope.
+\end{itemize}

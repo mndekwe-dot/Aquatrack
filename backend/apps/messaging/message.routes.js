@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const Message = require('./message.model');
-const { protect } = require('../../middleware/auth');
+const { protect, staffOnly } = require('../../middleware/auth');
 
-router.get('/inbox', protect, async (req, res) => {
+router.get('/inbox', protect, staffOnly, async (req, res) => {
   try {
     const messages = await Message.findAll({
       where: { receiver_type: 'staff', receiver_id: req.user.id },
@@ -14,7 +14,7 @@ router.get('/inbox', protect, async (req, res) => {
   }
 });
 
-router.post('/', protect, async (req, res) => {
+router.post('/', protect, staffOnly, async (req, res) => {
   try {
     const message = await Message.create({
       ...req.body,
@@ -27,7 +27,7 @@ router.post('/', protect, async (req, res) => {
   }
 });
 
-router.patch('/:id/read', protect, async (req, res) => {
+router.patch('/:id/read', protect, staffOnly, async (req, res) => {
   try {
     const message = await Message.findByPk(req.params.id);
     if (!message) return res.status(404).json({ message: 'Message not found' });

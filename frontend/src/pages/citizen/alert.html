@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerts | AquaTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="citizen.css">
+    <script src="../../services/i18n.js"></script>
+    <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
+    <style>
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: 1.5px solid #e2e8f0;
+            background: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #555;
+            font-family: 'Poppins', sans-serif;
+            transition: .2s;
+        }
+        .filter-btn.active {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+        }
+        .notif-list { display: flex; flex-direction: column; gap: 12px; }
+        .notif-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            box-shadow: 0 4px 14px rgba(0,0,0,.04);
+            border-left: 4px solid transparent;
+            cursor: pointer;
+            transition: .2s;
+        }
+        .notif-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.08); }
+        .notif-card.unread { background: #f0f7ff; }
+        .notif-card.type-bill       { border-color: #2563eb; }
+        .notif-card.type-leak       { border-color: #dc2626; }
+        .notif-card.type-anomaly    { border-color: #f59e0b; }
+        .notif-card.type-issue      { border-color: #7c3aed; }
+        .notif-card.type-system     { border-color: #64748b; }
+        .notif-icon {
+            width: 44px; height: 44px; border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 18px; flex-shrink: 0;
+        }
+        .notif-icon.type-bill    { background: #dbeafe; color: #2563eb; }
+        .notif-icon.type-leak    { background: #fee2e2; color: #dc2626; }
+        .notif-icon.type-anomaly { background: #fef3c7; color: #f59e0b; }
+        .notif-icon.type-issue   { background: #ede9fe; color: #7c3aed; }
+        .notif-icon.type-system  { background: #f1f5f9; color: #64748b; }
+        .notif-body { flex: 1; }
+        .notif-body strong { display: block; font-size: 14px; margin-bottom: 4px; }
+        .notif-body p { font-size: 13.5px; color: #555; margin: 0; line-height: 1.5; }
+        .notif-body time { font-size: 11.5px; color: #aaa; display: block; margin-top: 6px; }
+        .notif-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #2563eb; flex-shrink: 0; margin-top: 6px;
+        }
+        .notif-dot.read { background: transparent; }
+        .mark-all-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 16px;
+        }
+        .mark-all-btn {
+            background: none; border: none; color: #2563eb;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+        .empty-notif {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .empty-notif i { font-size: 42px; margin-bottom: 14px; color: #ddd; display: block; }
+        .unread-count {
+            background: #ef4444; color: #fff;
+            border-radius: 20px; padding: 1px 8px;
+            font-size: 11px; font-weight: 700;
+            margin-left: 6px;
+        }
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .summary-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 4px 14px rgba(0,0,0,.04);
+            text-align: center;
+        }
+        .summary-card .s-icon { font-size: 24px; margin-bottom: 8px; }
+        .summary-card .s-val { font-size: 26px; font-weight: 700; color: #2563eb; }
+        .summary-card .s-label { font-size: 12px; color: #888; margin-top: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="citizen-layout">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><i class="fa-solid fa-droplet"></i></div>
+            <div><h2>AquaTrack</h2><span data-i18n="portal_label">Citizen Portal</span></div>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="home.html"><i class="fa-solid fa-house"></i><span data-i18n="nav_home">Home</span></a></li>
+            <li><a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i><span data-i18n="nav_history">History</span></a></li>
+            <li class="active"><a href="alert.html"><i class="fa-solid fa-bell"></i><span data-i18n="nav_alerts">Alerts</span></a></li>
+            <li><a href="report.html"><i class="fa-solid fa-triangle-exclamation"></i><span data-i18n="nav_report">Report Issue</span></a></li>
+            <li><a href="profile.html"><i class="fa-solid fa-user"></i><span data-i18n="nav_profile">Profile</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <span class="user-name" id="sidebarName">—</span>
+            <span class="user-label" data-i18n="citizen_account">Citizen Account</span>
+            <button class="logout-link" id="logoutBtn" data-i18n="nav_logout">Log out</button>
+        </div>
+    </aside>
+
+    <main class="page-content">
+
+        <div class="topbar" style="margin-bottom:24px;">
+            <div>
+                <h1 data-i18n="alerts_title">My Alerts & Notifications</h1>
+                <p data-i18n="alerts_sub" style="color:#777;font-size:14px;">Stay informed about your water account</p>
+            </div>
+            <button class="multi" id="langBtn" onclick="toggleLang()" style="background:#f1f5f9;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:600;font-size:12.5px;color:#2563eb;">
+                🌐 Kinyarwanda
+            </button>
+        </div>
+
+        <div id="loadingState" class="loading-text" data-i18n="loading">Loading...</div>
+        <div id="errorState" class="error-box" style="display:none;"></div>
+
+        <div id="pageContent" style="display:none;">
+
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="s-icon">🔔</div>
+                    <div class="s-val" id="totalCount">0</div>
+                    <div class="s-label" data-i18n="alerts_all">All</div>
+                </div>
+                <div class="summary-card">
+                    <div class="s-icon">📬</div>
+                    <div class="s-val" id="unreadCount">0</div>
+                    <div class="s-label" data-i18n="alerts_unread">Unread</div>
+                </div>
+                <div class="summary-card">
+                    <div class="s-icon">⚠️</div>
+                    <div class="s-val" id="anomalyCount">0</div>
+                    <div class="s-label" data-i18n="alerts_type_anomaly">Anomaly</div>
+                </div>
+                <div class="summary-card">
+                    <div class="s-icon">💧</div>
+                    <div class="s-val" id="leakCount">0</div>
+                    <div class="s-label" data-i18n="alerts_type_leak">Leak Alert</div>
+                </div>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+                <div class="filter-bar" style="margin-bottom:0;">
+                    <button class="filter-btn active" data-filter="all" onclick="setFilter('all')" data-i18n="alerts_all">All</button>
+                    <button class="filter-btn" data-filter="unread" onclick="setFilter('unread')" data-i18n="alerts_unread">Unread</button>
+                    <button class="filter-btn" data-filter="anomaly" onclick="setFilter('anomaly')" data-i18n="alerts_type_anomaly">Anomaly</button>
+                    <button class="filter-btn" data-filter="leak" onclick="setFilter('leak')" data-i18n="alerts_type_leak">Leak</button>
+                    <button class="filter-btn" data-filter="bill" onclick="setFilter('bill')" data-i18n="alerts_type_bill">Bill</button>
+                    <button class="filter-btn" data-filter="issue" onclick="setFilter('issue')" data-i18n="alerts_type_issue">Issue</button>
+                </div>
+                <button class="mark-all-btn" id="markAllBtn" data-i18n="alerts_mark_read">Mark all as read</button>
+            </div>
+
+            <div id="notifList" class="notif-list"></div>
+
+        </div>
+
+    </main>
+</div>
+
+<nav class="bottom-nav">
+    <a href="home.html" class="nav-item"><i class="fa-solid fa-house"></i><span data-i18n="nav_home">Home</span></a>
+    <a href="history.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i><span data-i18n="nav_history">History</span></a>
+    <a href="alerts.html" class="nav-item active"><i class="fa-solid fa-bell"></i><span data-i18n="nav_alerts">Alerts</span></a>
+    <a href="report.html" class="nav-item"><i class="fa-solid fa-triangle-exclamation"></i><span data-i18n="nav_report">Report</span></a>
+    <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i><span data-i18n="nav_profile">Profile</span></a>
+</nav>
+
+<script src="../../services/api.js"></script>
+<script src="../../services/i18n.js"></script>
+<script src="citizen.js"></script>
+<script>
+    const ICONS = {
+        bill: "fa-file-invoice-dollar",
+        leak: "fa-faucet-drip",
+        anomaly: "fa-chart-line",
+        issue: "fa-screwdriver-wrench",
+        system: "fa-circle-info",
+    };
+
+    let allNotifs = [];
+    let currentFilter = "all";
+
+    function timeAgo(dateStr) {
+        const now = new Date();
+        const d = new Date(dateStr);
+        const diff = Math.floor((now - d) / 1000);
+        if (diff < 60) return t("alerts_just_now");
+        if (diff < 3600) return Math.floor(diff/60) + " min ago";
+        if (diff < 86400) return Math.floor(diff/3600) + "h ago";
+        return d.toLocaleDateString("en-GB", { day:"numeric", month:"short" });
+    }
+
+    function setFilter(f) {
+        currentFilter = f;
+        document.querySelectorAll(".filter-btn").forEach(b => {
+            b.classList.toggle("active", b.dataset.filter === f);
+        });
+        renderList();
+    }
+
+    function renderList() {
+        const list = document.getElementById("notifList");
+        let items = [...allNotifs];
+
+        if (currentFilter === "unread") items = items.filter(n => !n.is_read);
+        else if (currentFilter !== "all") items = items.filter(n => n.type === currentFilter);
+
+        if (items.length === 0) {
+            list.innerHTML = `<div class="empty-notif">
+      <i class="fa-solid fa-bell-slash"></i>
+      <p data-i18n="alerts_empty">${t("alerts_empty")}</p>
+    </div>`;
+            return;
+        }
+
+        list.innerHTML = items.map(n => `
+    <div class="notif-card type-${n.type} ${n.is_read ? '' : 'unread'}"
+         onclick="markRead(${n.id}, this)">
+      <div class="notif-icon type-${n.type}">
+        <i class="fa-solid ${ICONS[n.type] || 'fa-bell'}"></i>
+      </div>
+      <div class="notif-body">
+        <strong>${n.title}</strong>
+        <p>${n.message}</p>
+        <time>${timeAgo(n.createdAt)}</time>
+      </div>
+      <div class="notif-dot ${n.is_read ? 'read' : ''}"></div>
+    </div>
+  `).join("");
+    }
+
+    async function markRead(id, card) {
+        try {
+            await window.aquatrackApi.markOneRead(id);
+            const notif = allNotifs.find(n => n.id === id);
+            if (notif) notif.is_read = true;
+            card.classList.remove("unread");
+            card.querySelector(".notif-dot")?.classList.add("read");
+            updateCounts();
+        } catch(e) {}
+    }
+
+    document.getElementById("markAllBtn").addEventListener("click", async () => {
+        try {
+            await window.aquatrackApi.markAllRead();
+            allNotifs.forEach(n => n.is_read = true);
+            renderList();
+            updateCounts();
+        } catch(e) {}
+    });
+
+    function updateCounts() {
+        document.getElementById("totalCount").textContent = allNotifs.length;
+        document.getElementById("unreadCount").textContent = allNotifs.filter(n => !n.is_read).length;
+        document.getElementById("anomalyCount").textContent = allNotifs.filter(n => n.type === "anomaly").length;
+        document.getElementById("leakCount").textContent = allNotifs.filter(n => n.type === "leak").length;
+    }
+
+    // Seed demo notifications if backend returns empty
+    function seedDemoNotifs(summary, issues) {
+        const now = new Date();
+        const demo = [];
+        let id = 1000;
+
+        if (summary?.daily_readings?.length >= 3) {
+            const readings = summary.daily_readings;
+            const vals = readings.map(r => r.liters || 0);
+            const avg = vals.reduce((a,b)=>a+b,0)/vals.length;
+            readings.forEach(r => {
+                const liters = r.liters || 0;
+                const date = new Date(r.date).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+                if (liters === 0) {
+                    demo.push({ id: id++, type: "anomaly", is_read: false,
+                        title: "Zero Usage Detected",
+                        message: `No water usage was recorded on ${date}. If this seems wrong, please check your meter.`,
+                        createdAt: r.date });
+                } else if (avg > 0 && liters > avg * 2) {
+                    const pct = Math.round(((liters - avg)/avg)*100);
+                    demo.push({ id: id++, type: "anomaly", is_read: false,
+                        title: "Unusual Spike in Usage",
+                        message: `Your usage on ${date} was ${pct}% above your average. This could indicate a leak or left-open tap.`,
+                        createdAt: r.date });
+                }
+            });
+        }
+
+        if (issues?.length > 0) {
+            issues.forEach(issue => {
+                if (issue.status === "in_progress") {
+                    demo.push({ id: id++, type: "issue", is_read: false,
+                        title: "Issue Update: In Progress",
+                        message: `Your reported issue (${issue.issue_type.replace(/_/g," ")}) is now being handled by WASAC.`,
+                        createdAt: issue.updatedAt || issue.createdAt });
+                } else if (issue.status === "resolved") {
+                    demo.push({ id: id++, type: "issue", is_read: true,
+                        title: "Issue Resolved",
+                        message: `Your reported issue (${issue.issue_type.replace(/_/g," ")}) has been resolved. Thank you for reporting.`,
+                        createdAt: issue.updatedAt || issue.createdAt });
+                }
+            });
+        }
+
+        if (summary?.last_bill_amount) {
+            demo.push({ id: id++, type: "bill", is_read: true,
+                title: "Monthly Bill Ready",
+                message: `Your bill of ${Number(summary.last_bill_amount).toLocaleString()} RWF is available. Status: ${summary.last_bill_paid ? "Paid" : "Unpaid"}.`,
+                createdAt: new Date(now - 86400000*3).toISOString() });
+        }
+
+        demo.push({ id: id++, type: "system", is_read: true,
+            title: "Welcome to AquaTrack!",
+            message: "Your account is active. You will receive alerts for usage anomalies, billing updates and issue status changes.",
+            createdAt: new Date(now - 86400000*7).toISOString() });
+
+        return demo.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        applyTranslations();
+        window._onLangChange = () => applyTranslations();
+        if (!requireCitizen()) return;
+        applyTranslations();
+        window._onLangChange = () => { applyTranslations(); renderList(); };
+
+        const user = window.aquatrackApi.getUser();
+        document.getElementById("sidebarName").textContent = user?.full_name || "Citizen";
+
+        try {
+            let [notifs, summary, issues] = await Promise.all([
+                window.aquatrackApi.getMyNotifications().catch(() => []),
+                window.aquatrackApi.getMySummary().catch(() => null),
+                window.aquatrackApi.getMyIssues().catch(() => []),
+            ]);
+
+            // If backend returns no notifications generate from real data
+            if (!notifs || notifs.length === 0) {
+                notifs = seedDemoNotifs(summary, issues);
+            }
+
+            allNotifs = notifs;
+
+            document.getElementById("loadingState").style.display = "none";
+            document.getElementById("pageContent").style.display = "block";
+
+            updateCounts();
+            renderList();
+
+        } catch (err) {
+            document.getElementById("loadingState").style.display = "none";
+            const errBox = document.getElementById("errorState");
+            errBox.style.display = "block";
+            errBox.textContent = err.message || t("error_load");
+        }
+    });
+</script>
+
+</body>
+</html>
