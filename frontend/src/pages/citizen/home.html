@@ -6,6 +6,7 @@
     <title>Home | AquaTrack</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="citizen.css">
+    <script src="../../services/i18n.js"></script>
     <script src="https://kit.fontawesome.com/8ddda2c5e4.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -17,10 +18,11 @@
             <div><h2>AquaTrack</h2><span>Citizen Portal</span></div>
         </div>
         <ul class="sidebar-menu">
-            <li class="active"><a href="home.html"><i class="fa-solid fa-house"></i>Home</a></li>
-            <li><a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i>History</a></li>
-            <li><a href="report.html"><i class="fa-solid fa-triangle-exclamation"></i>Report Issue</a></li>
-            <li><a href="profile.html"><i class="fa-solid fa-user"></i>Profile</a></li>
+            <li class="active"><a href="home.html"><i class="fa-solid fa-house"></i><span data-i18n="nav_home">Home</span></a></li>
+            <li><a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i><span data-i18n="nav_history">History</span></a></li>
+            <li><a href="alert.html"><i class="fa-solid fa-bell"></i><span data-i18n="nav_alerts">Alerts</span></a></li>
+            <li><a href="report.html"><i class="fa-solid fa-triangle-exclamation"></i><span data-i18n="nav_report">Report Issue</span></a></li>
+            <li><a href="profile.html"><i class="fa-solid fa-user"></i><span data-i18n="nav_profile">Profile</span></a></li>
         </ul>
         <div class="sidebar-footer">
             <span class="user-name" id="sidebarName">—</span>
@@ -29,7 +31,6 @@
         </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
     <main class="page-content">
 
         <div class="topbar">
@@ -38,9 +39,12 @@
                 <h1 id="userName">...</h1>
             </div>
             <div class="alert-badge" id="alertBadge">
-                <i class="fa-solid fa-bell"></i>
+                <a href="alert.html"><i class="fa-solid fa-bell"></i></a>
                 <span class="dot"></span>
             </div>
+            <button id="langBtn" onclick="toggleLang()" style="background:#f1f5f9;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:600;font-size:12.5px;color:#2563eb;">
+                🌐 Kinyarwanda
+            </button>
         </div>
 
         <div id="loadingState" class="loading-text">Loading your dashboard...</div>
@@ -103,6 +107,8 @@
 <script src="citizen.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
+        applyTranslations();
+        window._onLangChange = () => applyTranslations();
         if (!requireCitizen()) return;
 
         const user = window.aquatrackApi.getUser();

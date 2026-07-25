@@ -1,13 +1,15 @@
-const router = require('express').Router();
-const Notification = require('./notification.model');
-const { protect } = require('../../middleware/auth');
+const express = require("express");
+const router = express.Router();
+const { protect } = require("../../middleware/auth");
+const Notification = require("./notification.model");
 
-router.get('/', protect, async (req, res) => {
+// GET /api/notifications/mine
+router.get("/mine", protect, async (req, res) => {
   try {
-    const recipient_type = req.user.role === 'citizen' ? 'household' : 'staff';
     const notifications = await Notification.findAll({
-      where: { recipient_type, recipient_id: req.user.id },
-      order: [['createdAt', 'DESC']],
+      where: { household_id: req.user.id },
+      order: [["createdAt", "DESC"]],
+      limit: 50,
     });
     res.json(notifications);
   } catch (err) {
@@ -15,14 +17,29 @@ router.get('/', protect, async (req, res) => {
   }
 });
 
-router.patch('/:id/read', protect, async (req, res) => {
+// PUT /api/notifications/read-all
+router.put("/read-all", protect, async (req, res) => {
   try {
-    const notif = await Notification.findByPk(req.params.id);
-    if (!notif) return res.status(404).json({ message: 'Notification not found' });
-    await notif.update({ read: true, read_at: new Date() });
-    res.json({ message: 'Marked as read' });
+    await Notification.update(
+        { is_read: true },
+        { where: { household_id: req.user.id } }
+    );
+    res.json({ message: "All marked as read" });
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// PUT /api/notifications/:id/read
+router.put("/:id/read", protect, async (req, res) => {
+  try {
+    await Notification.update(
+        { is_read: true },
+        { where: { id: req.params.id, household_id: req.user.id } }
+    );
+    res.json({ message: "Marked as read" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 

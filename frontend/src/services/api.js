@@ -109,6 +109,10 @@ const api = {
   changeStaffPassword: (current_password, new_password) =>
       request("/staff/change-password", { method: "POST", body: { current_password, new_password } }),
 
+  // Notifications
+  getMyNotifications: () => request("/notifications/mine"),
+  markAllRead: () => request("/notifications/read-all", { method: "PUT" }),
+  markOneRead: (id) => request(`/notifications/${id}/read`, { method: "PUT" }),
   // Session helpers
   setSession,
   clearSession,

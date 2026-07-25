@@ -12,6 +12,8 @@ function setLoading(btn, isLoading, idleText) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  applyTranslations();
+  window._onLangChange = () => applyTranslations();
 
   // LOGIN
   const loginForm = document.getElementById("loginForm");

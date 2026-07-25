@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const sequelize = require('./config/database');
 const path = require("path");
+const notificationRoutes = require("./apps/notifications/notification.routes");
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../frontend")));
 
+app.use("/api/notifications", notificationRoutes);
 app.use('/api/staff', require('./apps/staff/staff.routes'));
 app.use('/api/households', require('./apps/households/household.routes'));
 app.use('/api/meters', require('./apps/meters/meter.routes'));
