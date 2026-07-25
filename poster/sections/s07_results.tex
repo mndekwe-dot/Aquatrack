@@ -1,0 +1,45 @@
+% Owner: Merci Ndekwe
+
+\begin{center}
+  \metricbox{10}{Meters seeded}
+  \hfill
+  \metricbox{40}{DB readings}
+  \hfill
+  \metricbox{5 min}{Poll interval}
+\end{center}
+
+\vspace{0.4em}
+
+\begin{minipage}[t]{0.48\linewidth}
+\textbf{What is fully working}
+\begin{itemize}
+  \item Meter simulator live on Railway (always-on)
+  \item Backend poller calls simulator every 5 minutes and persists readings to PostgreSQL
+  \item All 3 vendor APIs returning realistic, time-based data
+  \item Kamstrup alarms persist across multiple polls
+  \item EoI valve closes at zero token balance
+  \item Susteq events fire by time-of-day probability only
+  \item 10 households, 10 meters, 40 readings seeded in database
+\end{itemize}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\textbf{What remains simulated}
+\begin{itemize}
+  \item No physical meters connected
+  \item Simulator state resets on server restart
+  \item Frontend--backend integration in progress
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Live endpoint}
+
+\small\texttt{aquatrack-meter-simulator-api.up.railway.app /kamstrup/api/readings}
+
+\vspace{0.5em}
+\begin{center}
+  \fcolorbox{ALUBlueLine}{ALUBlueLight}{
+    \parbox[c][3.2cm][c]{0.95\linewidth}{\centering\bfseries\Large Screenshot: DB records or live API response}
+  }
+\end{center}
+\end{minipage}
