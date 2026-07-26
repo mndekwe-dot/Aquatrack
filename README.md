@@ -46,6 +46,7 @@ Three meter types are simulated:
 | Authentication | JWT + bcryptjs |
 | Meter Simulator | Python, FastAPI, Uvicorn |
 | Frontend | HTML, CSS, JavaScript |
+| Backend Testing | Jest, Supertest |
 
 ---
 
@@ -133,10 +134,32 @@ The backend will:
 
 ```bash
 cd backend
-node seed-bulk.js
+node seed-demo.js
 ```
 
-Creates: 10 households, 10 meters (KAM-001 to KAM-010), 40 readings.
+Creates a full demo dataset: 4 staff (1 admin, 3 staff), 10 households, 10 meters, 110 readings, 9 alerts, 10 billing reports, 5 issue reports, and 10 notifications. Prints login credentials for the demo admin, staff, and a citizen account at the end.
+
+> `seed-bulk.js` is an older script and is currently broken — it targets Household fields (`owner_name`, `zone`, ...) that predate a schema change. Use `seed-demo.js`.
+
+### Run Backend Tests
+
+```bash
+cd backend
+npm test
+```
+
+Tests use [Jest](https://jestjs.io/) and [Supertest](https://github.com/ladjs/supertest) to drive the real Express app end-to-end (routes, auth middleware, Sequelize models) against an **isolated** Postgres database — `aquatrack_test` by default (override with `TEST_DB_NAME`) — on the same server as your dev DB, so `npm test` never touches your real `aquatrack` data.
+
+One-time setup — create the test database on your Postgres server:
+```sql
+CREATE DATABASE aquatrack_test;
+```
+or, if using the Docker Postgres container:
+```bash
+docker exec <container_name> psql -U postgres -c "CREATE DATABASE aquatrack_test;"
+```
+
+Test suites live in `backend/tests/` and cover staff auth, household registration/login, meters, alerts, billing/issue reports, and the JWT `protect` middleware (missing/malformed/expired tokens).
 
 ### Meter Simulator (Local)
 
@@ -170,12 +193,32 @@ Readings accumulate based on actual elapsed time and time-of-day usage patterns.
 | Method | Endpoint | Description | Auth |
 |--------|----------|-------------|------|
 | POST | `/api/staff/login` | WASAC staff login | No |
+| POST | `/api/staff/register` | Create a staff account | Admin |
+| POST | `/api/staff/create` | Create a staff account with a temp password | Admin |
+| GET | `/api/staff/me` | Current staff profile | JWT (staff) |
+| GET | `/api/staff` | List all staff | Admin |
+| POST | `/api/staff/change-password` | Change own password | JWT (staff) |
+| POST | `/api/households/register` | Citizen self-registration | No |
 | POST | `/api/households/login` | Citizen login | No |
-| GET | `/api/meters` | List all meters | JWT |
-| GET | `/api/meters/:id` | Get single meter | JWT |
-| PATCH | `/api/meters/:id/reading` | Update meter reading | JWT |
-| GET | `/api/alerts` | List alerts | JWT |
-| GET | `/api/reports` | List reports | JWT |
+| GET | `/api/households/me` | Current citizen profile | JWT (citizen) |
+| PUT | `/api/households/me` | Update own profile | JWT (citizen) |
+| GET | `/api/households/me/summary` | Usage, billing & alert summary | JWT (citizen) |
+| GET | `/api/households` | List all households | JWT (staff) |
+| GET | `/api/meters` | List all meters | JWT (staff) |
+| POST | `/api/meters` | Create a meter | JWT (staff) |
+| GET | `/api/meters/:id` | Get single meter | JWT (staff) |
+| PATCH | `/api/meters/:id/reading` | Record a meter reading | JWT (staff) |
+| GET | `/api/alerts` | List all alerts | JWT (staff) |
+| GET | `/api/alerts/mine` | Alerts for your own meter | JWT (citizen) |
+| PATCH | `/api/alerts/:id/resolve` | Resolve an alert | JWT (staff) |
+| GET | `/api/reports/billing` | List all billing reports | JWT (staff) |
+| GET | `/api/reports/billing/mine` | Your own billing history | JWT (citizen) |
+| PATCH | `/api/reports/billing/:id/paid` | Mark a bill as paid | JWT (staff) |
+| POST | `/api/reports/issues` | Submit an issue report | JWT (citizen) |
+| GET | `/api/reports/issues/mine` | Your own submitted issues | JWT (citizen) |
+| GET | `/api/reports/issues` | List all issue reports | JWT (staff) |
+| PATCH | `/api/reports/issues/:id/status` | Update an issue's status | JWT (staff) |
+| GET | `/api/notifications/mine` | Your own notifications | JWT |
 | GET | `/api/health` | Backend health check | No |
 
 ---
@@ -185,6 +228,14 @@ Readings accumulate based on actual elapsed time and time-of-day usage patterns.
 - **WASAC staff** — login via `/api/staff/login` → token stored as `aquatrack_token`
 - **Citizens** — login via `/api/households/login` → token stored as `citizen_token`
 - Protected routes require `Authorization: Bearer <token>` header
+
+---
+
+## Known Issues
+
+- **Notification routes are broken.** `notification.routes.js` queries `household_id` and `is_read`, but `notification.model.js` defines `recipient_type` / `recipient_id` / `read`. `GET /api/notifications/mine` and the two `read` routes currently throw a "column does not exist" error for both citizens and staff.
+- **`seed-bulk.js` is stale.** It targets old Household fields (`owner_name`, `owner_email`, `zone`) that no longer exist on the model. Use `seed-demo.js` instead (see [Seed the Database](#seed-the-database)).
+- **Recording a reading on an unassigned meter fails.** `PATCH /api/meters/:id/reading` sets `MeterReading.household_id` from `meter.household_id`, which is `null` until a citizen registers against that meter — since `household_id` is `NOT NULL` on `MeterReading`, this 400s. Only record readings on meters already linked to a household.
 
 ---
 
