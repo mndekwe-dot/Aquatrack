@@ -19,6 +19,7 @@
 ## 📋 Table of Contents
 
 - [Overview](#overview)
+- [Demo Video](#demo-video)
 - [Team](#team)
 - [Architecture](#architecture)
 - [Tech Stack](#tech-stack)
@@ -41,7 +42,7 @@ AquaTrack Rwanda is a full-stack smart water monitoring system built for the **W
 ### Key Features
 
 - 🔄 **Automated Telemetry Polling** — 5-minute interval poller fetches live meter readings from a cloud-hosted IoT simulator
-- 🚨 **Real-Time Leak Detection** — Persistent pipe-leak and high-usage alarms auto-generated from telemetry anomalies
+- 🚨 **Real-Time Leak Detection** — Persistent pipe-leak, high-usage, burst, reverse-flow, tamper, and low-credit alarms auto-generated from telemetry anomalies
 - 📊 **Dual Web Portals** — Citizen consumption dashboard + WASAC staff management dashboard
 - 🔐 **Role-Based Access Control** — Dual JWT auth system (citizen tokens & staff tokens with admin/meter_reader/technician/billing roles)
 - 📝 **Citizen Incident Reporting** — Citizens can file water-leak reports with photo evidence
@@ -59,7 +60,7 @@ AquaTrack Rwanda is a full-stack smart water monitoring system built for the **W
 | **Merci Ndekwe** | Project Manager + Database Architect | Database design, ERD, project coordination, poster setup |
 | **Luigi** | Backend Developer | Express API, solution architecture, methodology, references |
 | **Joseph** | Frontend Developer | UI/UX, citizen & staff portals, problem statement, objectives |
-| **Ange** | Integration Developer | Data flow integration, impact analysis, limitations & next steps |
+| **Ange** | Integration Developer | Data flow integration, impact analysis, limitations & next steps, demo video editing |
 
 ---
 
@@ -70,35 +71,45 @@ AquaTrack Rwanda is a full-stack smart water monitoring system built for the **W
 │   Citizen Portal    │ ──────────────► │                      │
 │   (HTML/CSS/JS)     │                 │   Express REST API   │
 └─────────────────────┘                 │   (Node.js)          │
-                                        │                      │
+                                         │                      │
 ┌─────────────────────┐     HTTPS      │   Middleware:         │
 │   WASAC Staff       │ ──────────────► │   • CORS + Helmet    │
 │   Dashboard         │                 │   • Morgan Logger    │
 └─────────────────────┘                 │   • Dual JWT Auth    │
-                                        └──────────┬───────────┘
-                                                   │
-                                          Sequelize ORM
-                                                   │
-                                        ┌──────────▼───────────┐
-                                        │   PostgreSQL DB      │
-                                        │   8 Relational       │
-                                        │   Tables             │
-                                        └──────────▲───────────┘
-                                                   │
-                                            Save Readings
-                                            & Alerts
-                                                   │
+                                         └──────────┬───────────┘
+                                                    │
+                                           Sequelize ORM
+                                                    │
+                                         ┌──────────▼───────────┐
+                                         │   PostgreSQL DB      │
+                                         │   8 Relational       │
+                                         │   Tables             │
+                                         └──────────▲───────────┘
+                                                    │
+                                             Save Readings
+                                             & Alerts
+                                                    │
 ┌─────────────────────┐   5-Min Poll   ┌──────────┴───────────┐
 │  FastAPI Simulator  │ ◄──────────────│   Automated Poller   │
 │  (Railway Cloud)    │                 │   (poller.js)        │
 │                     │  Telemetry     │                      │
-│  • Kamstrup (×10)   │ ──────────────►│   • Delta calc       │
-│  • Susteq  (×5)     │                │   • Leak detection   │
+│  • Kamstrup (×16)   │ ──────────────►│   • Delta calc       │
+│  • Susteq  (×9)     │                │   • Leak detection   │
 │  • EoI     (×5)     │                │   • Alert creation   │
+│  • Total: 30 meters │                │   • Notification     │
 └─────────────────────┘                 └──────────────────────┘
 ```
 
-> A detailed draw.io diagram is available at [`poster/architecture.drawio.xml`](poster/architecture.drawio.xml).
+> A detailed draw.io diagram is available at [`poster/architecture.drawio.xml`](poster/architecture.drawio.xml) and online at https://app.diagrams.net/#G13MowNZK6WFdDwMEVzUBnODFQYz9kvX4G#%7B%22pageId%22%3A%22FdAIzOuSJl4HaXcEDAcS%22%7D
+
+--- 
+
+## Demo Video
+
+A demo video walkthrough is available on YouTube:
+- https://www.youtube.com/watch?v=L7Rv2SpeS44
+
+The video covers the simulator, backend API, frontend portals, and end-to-end data flow.
 
 ---
 
@@ -115,6 +126,17 @@ AquaTrack Rwanda is a full-stack smart water monitoring system built for the **W
 | **Deployment** | Railway | Simulator cloud hosting |
 | **Security** | Helmet, CORS | HTTP security headers, cross-origin policy |
 | **Logging** | Morgan | HTTP request logging |
+
+---
+
+## Team
+
+| Member | Role | Responsibilities |
+|--------|------|-----------------|
+| **Merci Ndekwe** | Project Manager + Database Architect | Database design, ERD, project coordination, poster setup |
+| **Luigi** | Backend Developer | Express API, solution architecture, methodology, references |
+| **Joseph** | Frontend Developer | UI/UX, citizen & staff portals, problem statement, objectives |
+| **Ange** | Integration Developer | Data flow integration, impact analysis, limitations & next steps, demo video editing |
 
 ---
 
@@ -177,7 +199,7 @@ Aquatrack/
 │           └── i18n.js          # Internationalization service
 │
 ├── meter-simulator/
-│   ├── server.py                # FastAPI simulator (3 vendor endpoints)
+│   ├── server.py                # FastAPI simulator (30 meters, 3 vendor endpoints)
 │   ├── requirements.txt         # Python dependencies
 │   └── Procfile                 # Railway deployment config
 │
@@ -254,14 +276,11 @@ On startup the backend will:
 ### 3. Seed the Database
 
 ```bash
-# Basic seed (10 households, 10 meters, 40 readings)
-node seed-bulk.js
+# Full demo dataset (30 households, 30 meters, 330 readings, alerts, reports, notifications)
+node seed-demo.js
 
 # Demo citizen account
 node seed-citizen.js
-
-# Full demo dataset
-node seed-demo.js
 ```
 
 ### 4. Meter Simulator (Local — optional)
@@ -365,18 +384,18 @@ https://aquatrack-meter-simulator-api.up.railway.app
 
 | Endpoint | Vendor | Description |
 |----------|--------|-------------|
-| `GET /health` | — | Status, timestamp, active meter count |
-| `GET /kamstrup/api/readings` | Kamstrup | 10 residential smart meters |
-| `GET /susteq/api/events` | Susteq | 5 communal prepaid taps |
-| `GET /eoi/api/readings` | EoI | 5 prepaid home meters |
+| `GET /health` | — | Status, timestamp, active meter count, protocol breakdown |
+| `GET /kamstrup/api/readings` | Kamstrup | 16 residential ultrasonic smart meters with flow rates, cumulative m³, and persistent alarms |
+| `GET /susteq/api/readings` | Susteq | 9 communal Water ATM units with NFC tap events, credit balance, active tap count, and low-credit alarms |
+| `GET /eoi/api/readings` | EoI | 5 STS prepaid home meters with token balance, smart valve status, flow rate, and anti-tamper alarms |
 
 ### Vendor Protocol Details
 
 | Protocol | Meters | Key Behaviour |
 |----------|--------|--------------|
-| **Kamstrup** | KAM-001 → KAM-010 | Cumulative m³ readings; instantaneous flow rate; persistent pipe-leak alarms (5–12 polls) and high-usage alarms (3–6 polls) |
-| **Susteq** | TAP-001 → TAP-005 | Event-based dispense stream; token-ID linked transactions; 5–20 L per dispense |
-| **EoI** | EOI-001 → EOI-005 | Token balance system (1 token ≈ 0.02 m³); automatic valve shutoff at 0 tokens; 5% recharge probability; 2% tamper detection |
+| **Kamstrup MULTICAL 21** | KAM-001 → KAM-016 | Ultrasonic static metering, DN15-DN20, Q3 1.6–4 m³/h; alarms persist across polls: leak (5–12 polls), burst (2–4 polls), high-usage (3–6 polls), reverse-flow (3–6 polls), tamper (2–3 polls) |
+| **Susteq Water ATM** | SUST-001 → SUST-009 | 1–3 simultaneous taps, solar-powered, IP65, NFC tokens (blue/grey/orange); dispenses 5–20 L per event; mobile-money credit top-up; low-credit and tamper alarms |
+| **EoI STS Prepaid** | EOI-001 → EOI-005 | STS tokens (IEC 62055-41/51), AES-128 encryption, smart valve auto-shutoff at zero credit; anti-tamper: magnetic field, cover-open, reverse-flow, no-flow; GPRS/LoRaWAN/NB-IoT |
 
 ### Diurnal Usage Model
 
@@ -385,9 +404,12 @@ All readings scale with a time-of-day `usage_factor()`:
 | Time Window | Usage Factor | Description |
 |-------------|-------------|-------------|
 | 06:00 – 09:00 | 1.00 | Morning peak |
-| 09:00 – 17:00 | 0.35 – 0.55 | Midday / afternoon |
-| 17:00 – 21:00 | 0.90 | Evening peak |
-| 21:00 – 06:00 | 0.04 | Night baseline (leak detection window) |
+| 09:00 – 12:00 | 0.60 | Midday medium |
+| 12:00 – 14:00 | 0.40 | Midday low |
+| 14:00 – 17:00 | 0.25 | Afternoon low |
+| 17:00 – 21:00 | 0.95 | Evening peak |
+| 21:00 – 23:00 | 0.20 | Late evening |
+| 23:00 – 06:00 | 0.08 | Night baseline (leak detection window) |
 
 ---
 
@@ -454,7 +476,6 @@ pdflatex main.tex
 
 ## Known Issues
 
-- **Notification routes are broken.** `notification.routes.js` queries `household_id` and `is_read`, but `notification.model.js` defines `recipient_type` / `recipient_id` / `read`. `GET /api/notifications/mine` and the two `read` routes currently throw a "column does not exist" error for both citizens and staff.
 - **`seed-bulk.js` is stale.** It targets old Household fields (`owner_name`, `owner_email`, `zone`) that no longer exist on the model. Use `seed-demo.js` instead (see [Seed the Database](#seed-the-database)).
 - **Recording a reading on an unassigned meter fails.** `PATCH /api/meters/:id/reading` sets `MeterReading.household_id` from `meter.household_id`, which is `null` until a citizen registers against that meter — since `household_id` is `NOT NULL` on `MeterReading`, this 400s. Only record readings on meters already linked to a household.
 
