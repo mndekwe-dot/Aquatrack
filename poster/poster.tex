@@ -1,6 +1,5 @@
 \documentclass[25pt, a0paper, landscape]{tikzposter}
 
-% ---------- Packages ----------
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
@@ -13,7 +12,6 @@
 \usepackage{tikz}
 \usetikzlibrary{calc,positioning}
 
-% ---------- AquaTrack Frontend Theme Palette ----------
 \definecolor{AquaPrimary}{HTML}{2563EB}
 \definecolor{AquaDark}{HTML}{0F172A}
 \definecolor{AquaHeaderBg}{HTML}{1E40AF}
@@ -25,7 +23,6 @@
 \definecolor{AquaText}{HTML}{0F172A}
 \definecolor{AquaMuted}{HTML}{64748B}
 
-% ---------- Theme ----------
 \usetheme{Simple}
 \usecolorstyle{Default}
 \usebackgroundstyle{Default}
@@ -39,13 +36,11 @@
 \colorlet{blockbodybgcolor}{white}
 \colorlet{blockbodyfgcolor}{AquaText}
 
-% ---------- Spacing ----------
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.22em}
 \linespread{1.06}
 \setlist[itemize]{leftmargin=1.2em,itemsep=0.12em,topsep=0.12em,parsep=0.04em,partopsep=0pt}
 
-% ---------- Block ----------
 \defineblockstyle{AquaBlock}{
     titlewidthscale=1, bodywidthscale=1, roundedcorners=14,
     titleleft, titleoffsetx=0mm, titleoffsety=0mm,
@@ -61,7 +56,6 @@
 }
 \useblockstyle{AquaBlock}
 
-% ---------- Helpers ----------
 \newcommand{\takeawaybox}[1]{%
   \begin{center}
   \fcolorbox{AquaBorder}{AquaBoxBg}{
@@ -97,7 +91,6 @@
   \end{tabular}
 }
 
-% ---------- Title ----------
 \title{\Huge \bfseries AquaTrack Rwanda: Smart Water Monitoring System}
 \author{\Large Merci Ndekwe (PM \& DB) \textbar\ Luigi (Backend) \textbar\ Joseph (Frontend) \textbar\ Ange (Integration)}
 \institute{\large African Leadership University \textbar\ BSc (Hons) Software Engineering \textbar\ Research \& Demo Poster}
@@ -110,7 +103,6 @@
 
 \begin{columns}
 
-% ================= LEFT COLUMN =================
 \column{0.31}
 
 \block{1. Problem, Context, and Users}{
@@ -127,9 +119,9 @@
 
 \block{2. Objectives and Scope}{
   \begin{itemize}
-    \item \textbf{Aim:} Build an end-to-end smart water meter monitoring platform.
-    \item \textbf{Objective 1:} FastAPI simulator for 3 vendor standards (Kamstrup, Susteq, EoI).
-    \item \textbf{Objective 2:} Node.js poller persisting consumption deltas into PostgreSQL every 5 minutes.
+    \item \textbf{Aim:} Build and evaluate an end-to-end smart water meter monitoring platform for WASAC.
+    \item \textbf{Objective 1:} FastAPI simulator for 3 vendor standards: Kamstrup residential, Susteq communal taps, EoI prepaid meters.
+    \item \textbf{Objective 2:} Node.js poller executing every 5 minutes to persist consumption deltas into PostgreSQL with automatic anomaly detection.
     \item \textbf{Objective 3:} Role-based portals for citizens and WASAC staff.
     \item \textbf{Scope:} Live Railway-hosted simulator + responsive web client.
   \end{itemize}
@@ -149,30 +141,29 @@
 }
 
 \block{4. Constraints \& Design Decisions}{
-  \textbf{Database --- PostgreSQL + Sequelize ORM}
+  \textbf{Database Architecture --- PostgreSQL + Sequelize ORM}
   \begin{itemize}
-    \item Relational integrity via strict foreign keys across Households, Meters, Readings, and Alerts.
-    \item bcrypt password hashing via Sequelize \texttt{beforeCreate} hooks.
-    \item Trade-off: \texttt{sync(\{alter:true\})} used for rapid development; migrations needed for production.
+    \item \textbf{Relational Integrity:} Strict foreign-key constraints connect Households $\rightarrow$ Meters $\rightarrow$ MeterReadings $\rightarrow$ Alarms. A document store cannot enforce these guarantees natively.
+    \item \textbf{Security:} Password hashing handled via Sequelize \texttt{beforeCreate} bcrypt hooks.
+    \item \textbf{Trade-off:} Development used \texttt{sync(\{alter:true\})}; production requires structured migrations.
   \end{itemize}
 
   \vspace{0.3em}
-  \textbf{FastAPI Simulator (Railway)}
+  \textbf{FastAPI Meter Simulator (Railway Microservice)}
   \begin{itemize}
-    \item 30 meters across Kamstrup (16), Susteq (9), and EoI (5).
-    \item Persistent alarms: leak, burst, reverse flow, tamper, high usage.
-    \item Trade-off: in-memory state resets on reboot.
+    \item Simulates 30 meters across 3 vendor protocols with diurnal usage curves (peaks at 06:00--09:00 \& 17:00--21:00).
+    \item \textbf{Alarms:} Condition-triggered leak/high-usage alarms persist across 3--12 polls.
+    \item \textbf{Backend Detection:} The Node.js poller automatically flags nighttime leaks and daytime consumption spikes using threshold-based anomaly detection.
   \end{itemize}
 
   \vspace{0.3em}
-  \textbf{Authentication --- Dual JWT}
+  \textbf{Authentication --- Stateless JWT}
   \begin{itemize}
-    \item Separate tokens for staff (\texttt{aquatrack\_token}) and citizens (\texttt{citizen\_token}).
-    \item Roles: admin, meter\_reader, technician, billing.
+    \item Two token keys enforce role separation: \texttt{aquatrack\_token} (WASAC staff) and \texttt{citizen\_token} (citizens).
+    \item \textit{Trade-off:} Tokens cannot be invalidated before expiry without a blacklist --- acceptable for project scope.
   \end{itemize}
 }
 
-% ================= MIDDLE COLUMN =================
 \column{0.38}
 
 \block{5. Solution \& System Architecture}{
@@ -181,7 +172,10 @@
   AquaTrack bridges hardware telemetry and user dashboards via an automated 5-minute poller. The FastAPI simulator models hardware meters, the backend ingests readings into PostgreSQL, and Express REST APIs serve live analytics. The poller also runs real-time anomaly detection: nighttime leaks and daytime consumption spikes are persisted directly to the alerts table.
 
   \vspace{0.4em}
-  \posterimage[0.96\linewidth]{figures/architecture.png}{SYSTEM ARCHITECTURE DIAGRAM\\[0.2em]{\small (Web UI $\leftrightarrow$ Express REST API $\leftrightarrow$ PostgreSQL DB $\leftarrow$ 5-Min Poller $\leftarrow$ FastAPI Simulator)}}
+  \posterimage[0.96\linewidth]{}%
+    {SYSTEM ARCHITECTURE DIAGRAM\\[0.2em]%
+      {\small (Web UI $\leftrightarrow$ Express REST API $\leftrightarrow$ PostgreSQL DB $\leftarrow$ 5-Min Poller $\leftarrow$ FastAPI Simulator)}%
+    }{7.2cm}
 }
 
 \block{6. Methodology \& Build Process}{
@@ -236,7 +230,10 @@
   \end{itemize}
 
   \vspace{0.4em}
-  \posterimage[0.96\linewidth]{figures/screenshots/dashboard.png}{FRONTEND DASHBOARD SCREENSHOTS\\[0.2em]{\small (Citizen Consumption Portal \textbar\ WASAC Staff Management Dashboard)}}
+  \posterimage[0.96\linewidth]{}%
+    {FRONTEND DASHBOARD SCREENSHOTS\\[0.2em]%
+      {\small (Citizen Consumption Portal \textbar\ WASAC Staff Management Dashboard)}%
+    }{5.0cm}
 }
 
 \block{8. Impact \& Integration Data Flow}{
@@ -247,10 +244,12 @@
   \end{itemize}
 
   \vspace{0.4em}
-  \posterimage[0.96\linewidth]{figures/integration.png}{INTEGRATION \& DATA FLOW DIAGRAM\\[0.2em]{\small (End-to-End Pipeline: Simulator $\rightarrow$ Poller $\rightarrow$ PostgreSQL $\rightarrow$ Dashboard UI)}}
+  \posterimage[0.96\linewidth]{}%
+    {INTEGRATION \& DATA FLOW DIAGRAM\\[0.2em]%
+      {\small (End-to-End Pipeline: Simulator $\rightarrow$ Poller $\rightarrow$ PostgreSQL $\rightarrow$ Dashboard UI)}%
+    }{5.2cm}
 }
 
-% ================= RIGHT COLUMN =================
 \column{0.31}
 
 \block{4. Database Architecture}{
@@ -265,12 +264,15 @@
   \textbf{FastAPI Meter Simulator (Railway)}
   \begin{itemize}
     \item 30 meters: Kamstrup (16), Susteq (9), EoI (5).
-    \item Persistent alarms: leak (5–12 polls), burst (2–4 polls), high usage (3–6 polls).
-    \item Diurnal curves: peak 06:00–09:00 and 17:00–21:00; night baseline 21:00–06:00.
+    \item Persistent alarms: leak (5--12 polls), burst (2--4 polls), high usage (3--6 polls).
+    \item Diurnal curves: peak 06:00--09:00 and 17:00--21:00; night baseline 21:00--06:00.
   \end{itemize}
 
   \vspace{0.4em}
-  \posterimage[0.96\linewidth]{figures/erd.png}{DATABASE SCHEMA / ERD DIAGRAM\\[0.2em]{\small (Relational Entities: Households $\rightarrow$ Meters $\rightarrow$ MeterReadings / Leak Alarms)}}
+  \posterimage[0.96\linewidth]{}%
+    {DATABASE SCHEMA / ERD DIAGRAM\\[0.2em]%
+      {\small (Relational Entities: Households $\rightarrow$ Meters $\rightarrow$ MeterReadings / Leak Alarms)}%
+    }{5.5cm}
 }
 
 \block{9. Limitations \& Next Steps}{
@@ -281,10 +283,16 @@
 }
 
 \block{10. References \& Acknowledgements}{
-  \textbf{References:} WASAC Water Master Plan (2023); FastAPI Documentation (2024); Sequelize ORM Manual (2024).
+  \textbf{References:}
+  \begin{itemize}
+    \item WASAC Water Master Plan (2023)
+    \item FastAPI Documentation (2024)
+    \item Sequelize ORM Manual (2024)
+    \item UN Sustainable Development Goal 6: Clean Water and Sanitation
+  \end{itemize}
 
   \vspace{0.2em}
-  \textbf{Acknowledgements:} Special thanks to the African Leadership University (ALU) Software Engineering faculty.
+  \textbf{Acknowledgements:} Special thanks to the African Leadership University (ALU) Software Engineering faculty for their guidance and support throughout this project.
 }
 
 \end{columns}

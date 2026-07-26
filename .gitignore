@@ -29,3 +29,4 @@ npm-debug.log*
 # Untracked docs
 docs/proposal/Poster_Task_Division.md
 meter-simulator/__pycache__/server.cpython-313.pyc
+poster/alu-logo-white-full.png
