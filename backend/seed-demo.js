@@ -26,6 +26,11 @@ function rand(min, max) {
   return parseFloat((Math.random() * (max - min) + min).toFixed(3));
 }
 
+function round(val, decimals) {
+  const factor = Math.pow(10, decimals);
+  return Math.round(val * factor) / factor;
+}
+
 // ── Fleet definition ─────────────────────────────────────────────────────────
 const TOTAL_METERS = 30;
 const KAM_COUNT    = 16;
