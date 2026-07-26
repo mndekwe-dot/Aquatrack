@@ -53,7 +53,7 @@
         }
         .notif-icon.type-bill    { background: #dbeafe; color: #2563eb; }
         .notif-icon.type-leak    { background: #fee2e2; color: #dc2626; }
-        .notif-icon.type-anomaly { background: #fef3c7; color: #f59e0b; }
+        .notif-icon.type-high_usage { background: #fef3c7; color: #f59e0b; }
         .notif-icon.type-issue   { background: #ede9fe; color: #7c3aed; }
         .notif-icon.type-system  { background: #f1f5f9; color: #64748b; }
         .notif-body { flex: 1; }
@@ -159,7 +159,7 @@
                 <div class="summary-card">
                     <div class="s-icon">⚠️</div>
                     <div class="s-val" id="anomalyCount">0</div>
-                    <div class="s-label" data-i18n="alerts_type_anomaly">Anomaly</div>
+                    <div class="s-label" data-i18n="alerts_type_high_usage">Anomaly</div>
                 </div>
                 <div class="summary-card">
                     <div class="s-icon">💧</div>
@@ -172,7 +172,7 @@
                 <div class="filter-bar" style="margin-bottom:0;">
                     <button class="filter-btn active" data-filter="all" onclick="setFilter('all')" data-i18n="alerts_all">All</button>
                     <button class="filter-btn" data-filter="unread" onclick="setFilter('unread')" data-i18n="alerts_unread">Unread</button>
-                    <button class="filter-btn" data-filter="anomaly" onclick="setFilter('anomaly')" data-i18n="alerts_type_anomaly">Anomaly</button>
+                    <button class="filter-btn" data-filter="high_usage" onclick="setFilter('high_usage')" data-i18n="alerts_type_high_usage">Anomaly</button>
                     <button class="filter-btn" data-filter="leak" onclick="setFilter('leak')" data-i18n="alerts_type_leak">Leak</button>
                     <button class="filter-btn" data-filter="bill" onclick="setFilter('bill')" data-i18n="alerts_type_bill">Bill</button>
                     <button class="filter-btn" data-filter="issue" onclick="setFilter('issue')" data-i18n="alerts_type_issue">Issue</button>
@@ -202,7 +202,7 @@
     const ICONS = {
         bill: "fa-file-invoice-dollar",
         leak: "fa-faucet-drip",
-        anomaly: "fa-chart-line",
+        high_usage: "fa-chart-line",
         issue: "fa-screwdriver-wrench",
         system: "fa-circle-info",
     };
@@ -282,7 +282,7 @@
     function updateCounts() {
         document.getElementById("totalCount").textContent = allNotifs.length;
         document.getElementById("unreadCount").textContent = allNotifs.filter(n => !n.is_read).length;
-        document.getElementById("anomalyCount").textContent = allNotifs.filter(n => n.type === "anomaly").length;
+        document.getElementById("anomalyCount").textContent = allNotifs.filter(n => n.type === "high_usage").length;
         document.getElementById("leakCount").textContent = allNotifs.filter(n => n.type === "leak").length;
     }
 
@@ -300,13 +300,13 @@
                 const liters = r.liters || 0;
                 const date = new Date(r.date).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
                 if (liters === 0) {
-                    demo.push({ id: id++, type: "anomaly", is_read: false,
+                    demo.push({ id: id++, type: "high_usage", is_read: false,
                         title: "Zero Usage Detected",
                         message: `No water usage was recorded on ${date}. If this seems wrong, please check your meter.`,
                         createdAt: r.date });
                 } else if (avg > 0 && liters > avg * 2) {
                     const pct = Math.round(((liters - avg)/avg)*100);
-                    demo.push({ id: id++, type: "anomaly", is_read: false,
+                    demo.push({ id: id++, type: "high_usage", is_read: false,
                         title: "Unusual Spike in Usage",
                         message: `Your usage on ${date} was ${pct}% above your average. This could indicate a leak or left-open tap.`,
                         createdAt: r.date });
