@@ -232,7 +232,7 @@ Aquatrack/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-org/Aquatrack.git
+git clone https://github.com/mndekwe-dot/Aquatrack.git
 cd Aquatrack
 ```
 
