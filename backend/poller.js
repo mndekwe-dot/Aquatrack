@@ -7,8 +7,18 @@ const Alert        = require('./apps/alerts/alert.model');
 const Household    = require('./apps/households/household.model');
 const Notification = require('./apps/notifications/notification.model');
 
-const SIMULATOR_URL  = process.env.SIMULATOR_URL || 'http://localhost:4000';
-const POLL_INTERVAL  = parseInt(process.env.POLL_INTERVAL_MS) || 5 * 60 * 1000; // 5 minutes
+const POLL_INTERVAL  = parseInt(process.env.POLL_INTERVAL_MS) || 5 * 60 * 1000;
+
+function inferSimulatorUrl() {
+  if (process.env.SIMULATOR_URL) return process.env.SIMULATOR_URL;
+  const host = process.env.HOST || 'localhost';
+  if (host.includes('railway') || host.includes('render') || host.includes('fly.dev')) {
+    return 'https://aquatrack-meter-simulator-api.up.railway.app';
+  }
+  return 'http://localhost:4000';
+}
+
+const SIMULATOR_URL = inferSimulatorUrl();
 
 function fetchJSON(url) {
   return new Promise((resolve, reject) => {

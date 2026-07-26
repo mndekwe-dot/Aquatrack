@@ -74,7 +74,7 @@ function meterSerial(i) {
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
-sequelize.sync({ alter: true }).then(async () => {
+sequelize.sync({ force: true }).then(async () => {
 
   await Notification.destroy({ where: {} });
   await IssueReport.destroy({ where: {} });
