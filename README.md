@@ -123,7 +123,7 @@ The video covers the simulator, backend API, frontend portals, and end-to-end da
 | **Authentication** | JWT + bcryptjs | Dual-token auth (citizen & staff) |
 | **Meter Simulator** | Python 3.10+, FastAPI 0.115, Uvicorn | IoT telemetry generation |
 | **Frontend** | HTML5, CSS3, Vanilla JavaScript | Dual web portals (citizen + WASAC) |
-| **Deployment** | Railway | Simulator cloud hosting |
+| **Deployment** | Railway / Render / Vercel | Simulator + backend hosting + frontend hosting |
 | **Security** | Helmet, CORS | HTTP security headers, cross-origin policy |
 | **Logging** | Morgan | HTTP request logging |
 
@@ -451,6 +451,31 @@ AquaTrack implements a **dual JWT authentication** system:
 | Reports | `reports.html` | Review citizen incident reports |
 | Staff | `staff.html` | Staff account management (RBAC) |
 | Change Password | `change-password.html` | Staff password update |
+
+---
+
+## Demo Credentials
+
+The following mock accounts are seeded by `seed-demo.js` for testing and demonstration:
+
+### WASAC Staff
+
+| Role | Email | Password | Name |
+|------|-------|----------|------|
+| Admin | `admin@wasac.rw` | `Admin@123` | Admin WASAC |
+| Meter Reader | `john.mugabo@wasac.rw` | `Staff@123` | John Mugabo |
+| Technician | `sarah.uwase@wasac.rw` | `Staff@123` | Sarah Uwase |
+| Billing | `paul.habimana@wasac.rw` | `Staff@123` | Paul Habimana |
+
+### Citizens
+
+| Phone | Password | Name | Meter Serial |
+|-------|----------|------|--------------|
+| `0781234001` | `citizen123` | Jean Claude Nkurunziza | KAM-021 |
+| `0782234002` | `citizen123` | Marie Ange Uwimana | SUST-005 |
+| `0783234003` | `citizen123` | Patrick Habimana | EOI-012 |
+
+Live demo data includes **30 households**, **30 meters** (16 Kamstrup + 9 Susteq + 5 EoI), **330 readings**, **25 alerts**, **30 billing reports**, and **10 notifications**.
 
 ---
 
