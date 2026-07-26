@@ -483,7 +483,6 @@ Live demo data includes **30 households**, **30 meters** (16 Kamstrup + 9 Susteq
 
 | Service | URL |
 |---------|-----|
-| **Frontend (Vercel)** | `https://<your-vercel-project>.vercel.app` <br><small>_(replace with your actual Vercel deployment URL)_</small> |
 | **Backend API (Render)** | [https://aquatrack-backend.onrender.com](https://aquatrack-backend.onrender.com) |
 | **API Health Check** | [https://aquatrack-backend.onrender.com/health](https://aquatrack-backend.onrender.com/health) |
 | **Meter Simulator (Railway)** | [https://aquatrack-meter-simulator-api.up.railway.app](https://aquatrack-meter-simulator-api.up.railway.app) |
