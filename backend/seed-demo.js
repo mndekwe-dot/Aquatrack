@@ -118,7 +118,9 @@ sequelize.sync({ force: true }).then(async () => {
     const zone   = ZONES[i % ZONES.length];
     const fname  = FIRST_NAMES[i % FIRST_NAMES.length];
     const lname  = LAST_NAMES[i % LAST_NAMES.length];
-    const phone  = `078${String(1000 + i + 1)}${String(i).padStart(3, '0')}`;
+    const phone  = i < 3
+      ? ['0781234001','0782234002','0783234003'][i]
+      : `078${String(1000 + i + 1)}${String(i).padStart(3, '0')}`;
 
     const h = await Household.create({
       full_name:          `${fname} ${lname}`,
