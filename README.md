@@ -483,7 +483,7 @@ Live demo data includes **30 households**, **30 meters** (16 Kamstrup + 9 Susteq
 
 | Service | URL |
 |---------|-----|
-| **Backend API (Render)** | [https://aquatrack-backend.onrender.com](https://aquatrack-backend.onrender.com) |
+| **Render** | [https://aquatrack-backend.onrender.com](https://aquatrack-backend-l67q.onrender.com/index.html) |
 | **API Health Check** | [https://aquatrack-backend.onrender.com/health](https://aquatrack-backend.onrender.com/health) |
 | **Meter Simulator (Railway)** | [https://aquatrack-meter-simulator-api.up.railway.app](https://aquatrack-meter-simulator-api.up.railway.app) |
 
@@ -506,13 +506,6 @@ pdflatex main.tex
 | `figures/` | Architecture and ERD diagram images |
 | `architecture.drawio.xml` | Editable system architecture (import in draw.io) |
 | `alu-logo-white-full.png` | ALU branding |
-
----
-
-## Known Issues
-
-- **`seed-bulk.js` is stale.** It targets old Household fields (`owner_name`, `owner_email`, `zone`) that no longer exist on the model. Use `seed-demo.js` instead (see [Seed the Database](#seed-the-database)).
-- **Recording a reading on an unassigned meter fails.** `PATCH /api/meters/:id/reading` sets `MeterReading.household_id` from `meter.household_id`, which is `null` until a citizen registers against that meter — since `household_id` is `NOT NULL` on `MeterReading`, this 400s. Only record readings on meters already linked to a household.
 
 ---
 
