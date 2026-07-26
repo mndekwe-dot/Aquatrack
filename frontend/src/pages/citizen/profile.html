@@ -39,9 +39,10 @@
             <p>Your account details and preferences</p>
         </div>
         <div class="multi">
-            <button id="langBtn" onclick="toggleLang()" style="background:#f1f5f9;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:600;font-size:12.5px;color:#2563eb;">
-                🌐 Kinyarwanda
-            </button>
+            <select id="langSwitch" onchange="switchLang(this.value)" style="background:#f1f5f9;border:none;padding:8px 12px;border-radius:20px;cursor:pointer;font-weight:600;font-size:12.5px;color:#2563eb; font-family:'Poppins',sans-serif;">
+              <option value="en">🇬🇧 English</option>
+              <option value="rw">🇷🇼 Kinyarwanda</option>
+            </select>
         </div>
         <div id="loadingState" class="loading-text">Loading profile...</div>
         <div id="errorState" class="error-box"></div>

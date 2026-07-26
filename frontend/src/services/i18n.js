@@ -273,8 +273,22 @@ window.applyTranslations = function() {
     });
     const btn = document.getElementById("langBtn");
     if (btn) btn.textContent = "🌐 " + window.t("lang_toggle");
+    const sel = document.getElementById("langSwitch");
+    if (sel) sel.value = window._lang;
 };
 
 window.langToggleHTML = function() {
-    return `<button id="langBtn" onclick="toggleLang()" style="background:#f1f5f9;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:600;font-size:12.5px;color:#2563eb;white-space:nowrap;">🌐 ${window.t("lang_toggle")}</button>`;
+    const current = window._lang === "en" ? "English" : "Kinyarwanda";
+    return `<select id="langSwitch" onchange="switchLang(this.value)" style="background:#f1f5f9;border:none;padding:8px 12px;border-radius:20px;cursor:pointer;font-weight:600;font-size:12.5px;color:#2563eb;font-family:'Poppins',sans-serif;">
+      <option value="en" ${window._lang === 'en' ? 'selected' : ''}>🇬🇧 English</option>
+      <option value="rw" ${window._lang === 'rw' ? 'selected' : ''}>🇷🇼 Kinyarwanda</option>
+    </select>`;
+};
+
+window.switchLang = function(lang) {
+    if (window._lang === lang) return;
+    window._lang = lang;
+    localStorage.setItem("aquatrack_lang", lang);
+    window.applyTranslations();
+    if (window._onLangChange) window._onLangChange();
 };
