@@ -21,6 +21,13 @@ function clearSession() {
   localStorage.removeItem("aquatrack_role");
 }
 
+function redirectToLogin() {
+  const loginUrl = window.location.pathname.includes("/src/pages/")
+    ? new URL("../../../login.html", window.location.href)
+    : new URL("login.html", window.location.href);
+  window.location.replace(loginUrl);
+}
+
 function getUser() {
   const raw = localStorage.getItem("aquatrack_user");
   return raw ? JSON.parse(raw) : null;
@@ -32,7 +39,7 @@ async function request(path, { method = "GET", body, auth = true } = {}) {
   if (auth) {
     const token = getToken();
     if (!token) {
-      window.location.href = "/login.html";
+      redirectToLogin();
       return;
     }
     headers["Authorization"] = `Bearer ${token}`;
@@ -54,7 +61,7 @@ async function request(path, { method = "GET", body, auth = true } = {}) {
   if (res.status === 401) {
     // token missing/expired
     clearSession();
-    window.location.href = "/login.html";
+    redirectToLogin();
     return;
   }
 

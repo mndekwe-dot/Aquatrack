@@ -70,12 +70,14 @@ sequelize.sync({ alter: true }).then(async () => {
     { name: 'Paul Habimana',    email: 'paul.habimana@wasac.rw', password: 'Staff@123',  role: 'billing',      phone: 0782000004 },
   ];
   const staffMembers = [];
-  for (const s of staffData) {
-    const member = await Staff.create(s);
-    staffMembers.push(member);
-    console.log(`✓ Staff   [${member.role.padEnd(12)}]  ${member.name}  —  ${member.email}`);
-  }
-
+for (const s of staffData) {
+  const [member] = await Staff.findOrCreate({
+    where: { email: s.email },
+    defaults: s,
+  });
+  staffMembers.push(member);
+  console.log(`✓ Staff   [${member.role.padEnd(12)}]  ${member.name}  —  ${member.email}`);
+}
   // ── 2. Households ────────────────────────────────────────────────────────
   console.log('\n── Households ───────────────────────────────────────────');
   const households = [];
@@ -233,8 +235,11 @@ sequelize.sync({ alter: true }).then(async () => {
   console.log('══════════════════════════════════════════════════════════\n');
 
   process.exit();
-
+  
 }).catch(err => {
   console.error('✗ Seed failed:', err.message);
+  if (err.errors) {
+    err.errors.forEach(e => console.error('  →', e.message));
+  }
   process.exit(1);
 });

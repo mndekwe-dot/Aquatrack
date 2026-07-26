@@ -9,8 +9,11 @@ function requireStaff() {
 }
 
 function staffLogout() {
-  window.aquatrackApi.clearSession();
-  window.location.href = "wasac-login.html";
+  window.aquatrackApi?.clearSession?.();
+  localStorage.removeItem("aquatrack_token");
+  localStorage.removeItem("aquatrack_user");
+  localStorage.removeItem("aquatrack_role");
+  window.location.replace(new URL("wasac-login.html", window.location.href));
 }
 
 function formatRWF(amount) {

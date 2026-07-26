@@ -2,15 +2,21 @@ function requireCitizen() {
   const role = window.aquatrackApi.getRole();
   const token = window.aquatrackApi.getToken();
   if (!token || role !== "citizen") {
-    window.location.href = "/../../../login.html";
+    window.location.replace(new URL("../../../login.html", window.location.href));
     return false;
   }
   return true;
 }
 
 function citizenLogout() {
-  window.aquatrackApi.clearSession();
-  window.location.replace("/login.html");
+  // Logout is client-side because authentication uses stateless JWTs.
+  // Use a relative URL so it works whether the site is served from the
+  // frontend folder or from a repository/deployment subpath.
+  window.aquatrackApi?.clearSession?.();
+  localStorage.removeItem("aquatrack_token");
+  localStorage.removeItem("aquatrack_user");
+  localStorage.removeItem("aquatrack_role");
+  window.location.replace(new URL("../../../login.html", window.location.href));
 }
 
 function formatRWF(amount) {
