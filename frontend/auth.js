@@ -27,11 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
       setLoading(btn, true, "Sign In");
       try {
         const data = await window.aquatrackApi.citizenLogin(phone, password);
+        console.log("[login] citizen login success", data);
         window.aquatrackApi.setSession(data.token, data.user, "citizen");
         window.location.href = "src/pages/citizen/home.html";
       } catch (err) {
-          showError("Invalid phone number or password.");
-
+        console.error("[login] citizen login failed", err);
+        showError(err.message || "Login failed. Check console for details.");
       } finally {
         setLoading(btn, false, "Sign In");
       }
