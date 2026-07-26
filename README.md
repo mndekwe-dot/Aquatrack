@@ -452,6 +452,14 @@ pdflatex main.tex
 
 ---
 
+## Known Issues
+
+- **Notification routes are broken.** `notification.routes.js` queries `household_id` and `is_read`, but `notification.model.js` defines `recipient_type` / `recipient_id` / `read`. `GET /api/notifications/mine` and the two `read` routes currently throw a "column does not exist" error for both citizens and staff.
+- **`seed-bulk.js` is stale.** It targets old Household fields (`owner_name`, `owner_email`, `zone`) that no longer exist on the model. Use `seed-demo.js` instead (see [Seed the Database](#seed-the-database)).
+- **Recording a reading on an unassigned meter fails.** `PATCH /api/meters/:id/reading` sets `MeterReading.household_id` from `meter.household_id`, which is `null` until a citizen registers against that meter — since `household_id` is `NOT NULL` on `MeterReading`, this 400s. Only record readings on meters already linked to a household.
+
+---
+
 ## License
 
 Academic project — African Leadership University © 2026
